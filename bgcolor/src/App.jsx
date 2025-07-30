@@ -1,11 +1,15 @@
 import { useState } from "react";
+import AutoColorChange from "./AutoColorChange";
 
 function App() {
   const [color, setColor] = useState("olive");
 
+
+
   return (
     <>
-      <div className="w-full h-screen duration-200"
+      
+      <div className="w-full h-screen duration-500 transition-all ease-in-out"
       style={{backgroundColor: color}}
       >
         <div className="fixed flex flex-wrap justify-center
@@ -65,10 +69,10 @@ function App() {
               className="outline-none px-4 py-1 rounded-full
                text-white shadow-lg"
               style={{backgroundColor: "black"}}
-            >Black</button>
- 
-           </div>
-         </div>
+            >Black</button>      
+          </div>   
+        </div>
+        <AutoColorChange setColor={setColor} />
       </div>
     </>
   )
