@@ -71,6 +71,9 @@ function App() {
               <AutoColorChange setColor={setColor} />
           </div>
         </div>
+     <footer className="fixed bottom-0 w-full text-center py-2 bg-gray-800 text-white text-sm">
+   © {new Date().getFullYear()} Made with 🧠 & 💻 by <a href="https://github.com/Vintage-K11" target="_blank" className="underline hover:text-blue-400">Vishal</a>
+</footer>
 
 
       </div>
