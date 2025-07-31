@@ -39,14 +39,15 @@ _(You can add a screenshot to your project directory and update the filename if 
 ## 📁 Project Structure
 
 Background-Color-Visual/
-├── public/
-├── src/
-│ ├── AutoColorChange.jsx
-│ ├── App.jsx
-│ |── main.jsx
-├── tailwind.config.js
-├── package.json
-└── README.md
+
+- ├── public/
+- ├── src/
+- │ ├── AutoColorChange.jsx
+- │ ├── App.jsx
+- │ |── main.jsx
+- ├── tailwind.config.js
+- ├── package.json
+- └── README.md
 
 ---
 
