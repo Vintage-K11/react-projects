@@ -61,22 +61,32 @@ Follow these steps to run the project locally:
 
 ### Installation
 
-```bash
 # Clone the repository
+
+```bash
 git clone https://github.com/Vintage-K11/react-projects.git
+```
 
 # Navigate into the project folder
+
+```bash
 cd Background-Color-Visual
+```
 
 # Install dependencies
+
+```bash
 npm install
+```
 
 # Run the development server
+
+```bash
 npm run dev
+```
 
 Open your browser at http://localhost:5173 to view the app.
 
 👨‍💻 Author
 Vishal
 Made with ❤️ and code.
-```
