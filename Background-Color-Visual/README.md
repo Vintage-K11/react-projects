@@ -6,15 +6,13 @@ A visually engaging and interactive web app that lets users change the backgroun
 
 ## 🚀 Live Demo
 
-[🔗 Click here to view live](https://your-deployed-link.com)  
-_(Replace this with your actual live URL, e.g., from Vercel, Netlify, or GitHub Pages)_
+[🔗 Click here to view live](https://your-deployed-link.com)
 
 ---
 
 ## 📸 Screenshot
 
 ![App Screenshot](image.png)
-_(You can add a screenshot to your project directory and update the filename if needed)_
 
 ---
 
@@ -33,21 +31,6 @@ _(You can add a screenshot to your project directory and update the filename if 
 - [React](https://reactjs.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Vite](https://vitejs.dev/)
-
----
-
-## 📁 Project Structure
-
-Background-Color-Visual/
-
-- ├── public/
-- ├── src/
-- │ ├── AutoColorChange.jsx
-- │ ├── App.jsx
-- │ |── main.jsx
-- ├── tailwind.config.js
-- ├── package.json
-- └── README.md
 
 ---
 
@@ -87,6 +70,7 @@ npm run dev
 
 Open your browser at http://localhost:5173 to view the app.
 
-👨‍💻 Author
+## 👨‍💻 Author
+
 Vishal
 Made with ❤️ and code.
