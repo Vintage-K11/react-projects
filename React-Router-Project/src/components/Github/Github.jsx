@@ -15,7 +15,7 @@ export default function Github() {
 
     return (
         <div className="bg-gray-700 text-amber-200 text-3xl p-4">
-            Github Username : {data.login} 
+            Github Username : {data.followers} 
             <img src={data.avatar_url} alt="Profile Pic" width={300} />
         </div>
     )
