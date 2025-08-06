@@ -15,13 +15,17 @@ export default function Github() {
 
     return (
         <div className="bg-gray-700 text-amber-200 text-3xl p-4">
-            Github Username : {data.followers} 
-            <img src={data.avatar_url} alt="Profile Pic" width={300} />
+            Github Username : {data.name} <br />
+            Github Repo : {data.public_repos} <br />
+
+            <img src={data.avatar_url} alt="Profile Pic" width={300}  className="mx-auto"/>
         </div>
     )
 }
 
-export const githubInfoLoader = async() => {
-    const response = await fetch('https://api.github.com/users/Vintage-K11')
-    return response.json()
+export const githubInfoLoader = async () => {
+    const response = await fetch('https://api.github.com/users/Vintage-K11');
+    const data = await response.json(); // Parse JSON
+    // console.log(data); // Log full data
+    return data; // Return data to useLoaderData
 }
