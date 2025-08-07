@@ -1,12 +1,34 @@
-# React + Vite
+# 📝 Todo App — React + Vite + Context API + LocalStorage
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A lightweight and fast Todo application built using **React**, **Vite**, **Context API**, and **Local Storage**. This project demonstrates state management using Context API and persistent storage using the browser's local storage.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- ✅ Add and delete todos
+- ✅ Mark tasks as completed
+- ✅ Filter completed/incomplete tasks
+- ✅ Persistent state with LocalStorage
+- ✅ Global state management with Context API
+- ✅ Fast build with Vite
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🔧 Tech Stack
+
+- ⚛️ React (Functional Components + Hooks)
+- ⚡ Vite (Blazing fast bundler)
+- 📦 Context API (Global State)
+- 🗃️ Local Storage (Persistent Todos)
+- 💅 Tailwind CSS (Optional if used for styling)
+
+---
+
+## 💡 Motivation
+This project was built to:
+
+- Practice global state management with Context API
+- Learn how to use Local Storage for persistence
+- Use Vite for fast development experience
+
