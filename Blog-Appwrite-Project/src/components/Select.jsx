@@ -1,8 +1,8 @@
-import { defaultSerializeQueryArgs } from "@reduxjs/toolkit/query";
 import React, {useId} from "react";
 
 function Select({
-    options, label, className, ...props }, ref) {
+    options, label, className, ...props }, ref)
+{
     
     const id = useId();
     
