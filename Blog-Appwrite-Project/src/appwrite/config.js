@@ -1,5 +1,5 @@
 import conf from "../conf/conf";
-import { Client, Databases,Storage,Query, ID } from "appwrite";
+import { Client, Databases, Storage, Query, ID, Permission, Role } from "appwrite";
 
 
 export class Service { 
@@ -21,9 +21,10 @@ export class Service {
             return await this.databases.createDocument(
                 conf.appWriteDatabaseId,
                 conf.appWriteCollectionId,
-                slug,// Using slug as the document ID
+                ID.unique(),// Using a unique ID
                 {
                     title,
+                    slug,
                     content,
                     featuredImage,
                     status,
@@ -38,12 +39,12 @@ export class Service {
 
     }
 
-    async updatePost(slug, { title, content, featuredImage, status}) {
+    async updatePost(postId, { title, content, featuredImage, status}) {
         try {
             return await this.databases.updateDocument(
                 conf.appWriteDatabaseId,
                 conf.appWriteCollectionId,
-                slug, // Using slug as the document ID
+                postId,
                 {
                     title,
                     content,
@@ -57,12 +58,12 @@ export class Service {
         }
     }
 
-    async deletePost(slug) {
+    async deletePost(postId) {
         try {
              await this.databases.deleteDocument(
                 conf.appWriteDatabaseId,
                 conf.appWriteCollectionId,
-                slug // Using slug as the document ID
+                postId
             );
             return true;
         } catch (error) {
@@ -71,12 +72,12 @@ export class Service {
         }
     }
 
-    async getPost(slug) {
+    async getPost(postId) {
         try {
             return await this.databases.getDocument(
                 conf.appWriteDatabaseId,
                 conf.appWriteCollectionId,
-                slug
+                postId
                 
             );
         } catch (error) {
@@ -90,7 +91,7 @@ export class Service {
             return await this.databases.listDocuments(
                 conf.appWriteDatabaseId,
                 conf.appWriteCollectionId,
-
+                queries
                 //[ Query.equal("status", "active") ]
             );
         } catch (error) {
@@ -105,8 +106,9 @@ export class Service {
             return await this.bucket.createFile(
                 conf.appWriteBucketId,
                 ID.unique(),
-                file
-            );
+                file,
+                [Permission.read(Role.any())]
+            )
         } catch (error) {
             console.log("Error uploading file:", error);
             return false;
@@ -119,7 +121,8 @@ export class Service {
                 conf.appWriteBucketId,
                 fileId
             )
-            return true;
+            return true
+
         } catch (error) {
             console.log("Error deleting file:", error);
             return false;

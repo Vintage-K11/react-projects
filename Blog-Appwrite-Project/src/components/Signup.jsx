@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import authService from "../appwrite/auth";
 import { Link, useNavigate } from 'react-router-dom'
-import { login } from "../store/AuthSlice";
+import { login } from "../store/authSlice";
 import Button from "./Button";
 import Input from "./Input";
 import Logo from "./Logo";

@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { Container, PostForm } from '../components'
 import appwriteService from '../appwrite/config'
 import { useNavigate, useParams } from 'react-router-dom'
+import { Query } from 'appwrite'
 
 function EditPost() {
     const [post, setPosts] = useState(null)
@@ -10,9 +11,12 @@ function EditPost() {
 
     useEffect(() => {
         if (slug) {
-            appwriteService.getPost(slug).then((post) => {
-                if (post) {
-                    setPosts(post)
+            appwriteService.getPosts([Query.equal("slug", slug)]).then((posts) => {
+                if (posts && posts.documents.length > 0) {
+                    const foundPost = posts.documents[0];
+                    setPosts(foundPost);
+                } else {
+                    navigate('/');
                 }
             })
         } else {

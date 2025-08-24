@@ -1,5 +1,6 @@
-import React, {useCallback} from 'react'
+import React, { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
+import { useDispatch } from 'react-redux'
 import Button from "../Button";
 import Input from "../Input";
 import Select from "../Select";
@@ -7,8 +8,9 @@ import RTE from "../RTE";
 import appwriteService from "../../appwrite/config"
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { addPost, updatePost as updatePostAction } from '../../store/postSlice'
 
-function PostForm({post}) {
+function PostForm({ post }) {
     const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
         defaultValues: {
             title: post?.title || '',
@@ -20,6 +22,7 @@ function PostForm({post}) {
 
     const navigate = useNavigate()
     const userData = useSelector(state => state.auth.userData)
+    const dispatch = useDispatch()
 
     const submit = async (data) => {
         if (post) {
@@ -30,11 +33,12 @@ function PostForm({post}) {
             }
             const dbPost = await appwriteService.updatePost(post.$id, {
                 ...data,
-                featuredImage: file ? file.$id : undefined,
+                featuredImage: file ? file.$id : post.featuredImage,
             })
 
             if (dbPost) {
-                navigate(`/post/${dbPost.$id}`)
+                dispatch(updatePostAction(dbPost))
+                navigate(`/post/${dbPost.slug}`)
             }
         } else {
             const file = await appwriteService.uploadFile(data.image[0]);
@@ -47,6 +51,7 @@ function PostForm({post}) {
                     userId: userData.$id,
                 })
                 if (dbPost) {
+                    dispatch(addPost(dbPost))
                     navigate(`/post/${dbPost.$id}`)
                 }
             }
@@ -55,12 +60,15 @@ function PostForm({post}) {
 
     const slugTransform = useCallback(
       (value) => {
-        if (value && typeof value === 'string') 
-            return value
+        if (value && typeof value === 'string') {
+            const slug = value
                 .trim()
                 .toLowerCase()
-                .replace(/^[a-zA-Z\d\s]+/g, '-')
-            .replace(/\s/g, '-')
+                .replace(/[^a-zA-Z\d]+/g, '-') // Replace invalid chars with -
+                .replace(/^-+|-+$/g, '');      // Remove leading/trailing -
+            
+            return slug.substring(0, 36).replace(/-+$/, ''); // Truncate and remove trailing -
+        }
         
         return ''
       },

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom'
-import { login as authLogin } from '../store/AuthSlice' 
+import { login as authLogin } from '../store/authSlice' 
 import Button from "./Button";
 import Input from "./Input";
 import Logo from "./Logo";
