@@ -10,48 +10,53 @@ export class AuthService {
         this.client
             .setEndpoint(conf.appwriteUrl)
             .setProject(conf.appwriteProjectId);
-this.account = new Account(this.client);
-console.log("Account object initialized:", this.account);
-console.log("Available methods:", Object.getOwnPropertyNames(this.account));
+        this.account = new Account(this.client);
             
     }
 
-    async createAccount({email, password, name}) {
-        try {
-            const userAccount = await this.account.create(ID.unique(), email, password, name);
-            if (userAccount) {
-                // call another method
-                return this.login({email, password});
-            } else {
-               return  userAccount;
-            }
-        } catch (error) {
-            throw error;
+  async createAccount({ email, password, name }) {
+    try {
+        const userAccount = await this.account.create(ID.unique(), email, password, name);
+        if (userAccount) {
+            console.log("Account created successfully:", userAccount);
+            return userAccount; // No auto-login
+        } else {
+            console.warn("Account creation returned null/undefined");
+            return null;
         }
+    } catch (error) {
+        console.error("AuthService :: createAccount :: error", error);
+        throw error;
+    }
+}
+
+   async login({ email, password }) {
+        try {
+            const session = await this.account.createEmailPasswordSession(email, password);
+            console.log("Login successful:", session);
+            return session;
+        } catch (error) {
+            console.error("AuthService :: login :: error", error);
+            throw error;
+    }
     }
 
-    async login({email, password}) {
-        try {
-            return await this.account.createEmailSession(email, password);
-        } catch (error) {
-            throw error;
-        }
-    }
 
     async getCurrentUser() {
-        try {
-            return await this.account.get();
-        } catch (error) {
-            console.log("Appwrite serive :: getCurrentUser :: error", error);
-        }
-
+    try {
+        const user = await this.account.get();
+        console.log(" Current user:", user);
+        return user;
+    } catch (error) {
+        console.warn(" No active session. User is not logged in.");
         return null;
     }
+}
 
     async logout() {
 
         try {
-            await this.account.deleteSessions();
+            await this.account.deleteSession('current');
         } catch (error) {
             console.log("Appwrite serive :: logout :: error", error);
         }
