@@ -1,0 +1,304 @@
+🔑 Auth (Login / Signup)
+
+AppInput.jsx → email, username, password fields
+
+AppLabel.jsx → form field labels
+
+AppButton.jsx → login/signup buttons
+
+AppToast.jsx → show success/error messages
+
+📝 Blog (Posts / Editor)
+
+AppCard.jsx → post preview cards, post lists
+
+AppTextarea.jsx → blog content editor, comments
+
+AppDialog.jsx → confirmation before deleting a post
+
+AppSkeleton.jsx → loading posts, editor placeholder
+
+💬 Comments
+
+AppInput.jsx → comment input field
+
+AppButton.jsx → submit comment
+
+AppSkeleton.jsx → loading comment list
+
+👤 Profile
+
+UserAvatar.jsx → user profile picture (with fallback initials)
+
+AppCard.jsx → profile stats card, posts card
+
+AppTabs.jsx → switch between “Posts / About / Activity”
+
+AppDialog.jsx → edit profile modal
+
+📊 Dashboard
+
+AppNavMenu.jsx → top navigation bar for dashboard
+
+AppDropdown.jsx → profile/settings dropdown
+
+AppSkeleton.jsx → loading charts or widgets
+
+AppButton.jsx → actions (publish post, manage users)
+
+🌍 Global
+
+AppToast.jsx → all global notifications
+
+AppDialog.jsx → modals across the app
+
+AppCard.jsx → reusable card container anywhere
+
+
+
+Plans of Component;
+
+@MainHeader => 
+
+<MainHeader>
+1. Branding logo Clickable → redirects to home page.
+2. Primary Links (Public)
+🏠 Home → Latest blog posts.
+ℹ️ About → About the blog/authors.
+📩 Contact → Contact form or email.
+📚 All Posts / Categories → Browse by category/tag.
+3. User Links (Auth Required)
+🔑 Login / Signup → Shown if user not logged in.
+👤 Profile / Dashboard → For logged-in users.
+✍️ Write Post → For authors only.
+🚪 Logout → Visible when logged in.
+4. Extras (Optional)
+🔍 Search bar → Search blogs by keyword.
+📱 Mobile menu (hamburger) → For small screens.
+</MainHeader>
+
+@MainFooter => 
+<MainFooter>
+        -> Brand Logo
+        -> One Liner Statement
+        -> Soical Icons
+        -> Credits : Tools/Libraries
+</MainFooter>
+
+
+@SubFooter =>
+<SubFooter>
+    -> Quick links (Home, Contact, Privacy).
+    -> Social media links.
+</SubFooter>
+
+
+@SocialSidebar => 
+
+<SocialSidebar>
+    -> Toggle theme
+    -> Social Icons
+</SocialSidebar>
+
+@SubHeader =>
+
+<SubHeader>
+    Brand Logo
+</SubHeader>
+
+
+Plans According to Pages;
+
+# Home Page 
+<Home>
+    <MainHeader>
+    <SocialSidebar>
+    <Home Content>
+        <Display 1>
+            Left Side : Text and Button
+            right Side : Image
+        </Display 1>
+
+        <Display 2>
+            Left Side : Insight Image
+            Right Side : Motive Text
+        </Display 2>
+
+        <Display 3>
+            -> Headline
+            -> Tagged 3 Cards Vertical Elongation (Best of Category)
+            Chronological list of posts with:
+            + Thumbnail / Cover image
+            + Title
+            + Author name + date
+            + Short excerpt / preview
+            + “Read More” link
+        </Display 3>
+
+        <Display 4>
+            -> Call to Action (CTA)
+            “Start Writing”
+        </Display 4>
+    </Home Content>
+    <MainFooter>
+</Home>
+
+# About Page
+<About>
+   [ Title: "About Me" ]
+------------------------------
+[ Intro paragraph: short story ]
+------------------------------
+[ Mission / Purpose Section ]
+------------------------------
+[ Author Section (photo + bio + socials) ]
+------------------------------
+[ Achievements / Milestones ]
+------------------------------
+[ Call to Action (Subscribe / Contact) ]
+------------------------------
+</About>
+
+# Contact Page
+<Contact>
+   [ Navbar ]
+
+[ Title: "Contact Me" ]
+------------------------------------
+[ Short intro text ]
+------------------------------------
+[ Contact Form ]
+   - Name
+   - Email
+   - Message
+   - Submit Button
+------------------------------------
+[ OR Contact Info Section ]
+   - Email
+   - Phone
+------------------------------------
+[ Social Media Icons ]
+------------------------------------
+[ Footer ]
+
+</Contact>
+
+#Auth Page 
+
+[ Navbar ]
+
+LOGIN PAGE
+---------------------------
+Email: [_____________]
+Password: [__________]
+[ Login Button ]
+
+[ Forgot Password? ]
+[ Don't have an account? Sign Up ]
+
+---------------------------
+SIGNUP PAGE
+---------------------------
+Name: [_____________]
+Email: [_____________]
+Password: [__________]
+Confirm Password: [__________]
+[ Sign Up Button ]
+
+[ Already have an account? Login ]
+
+
+#Profile Page/Dashboard
+
+1. User Info Section
+Profile picture (avatar).
+Full name / username.
+Short bio / tagline.
+Location, website, social links (optional).
+2. Stats Overview
+📝 Number of blog posts written.
+❤️ Total likes/upvotes.
+💬 Total comments received.
+👥 Followers / Following (if you add social feature).
+3. User Content
+My Posts → List of all blogs written by the user.
+With edit/delete option (if owner).
+Saved/Bookmarked Posts (optional).
+4. Settings & Actions
+✏️ Edit Profile → Update name, bio, avatar.
+⚙️ Account Settings → Change email, password.
+🚪 Logout button.
+
+📑 Pages Required for Intermediate Blog App
+1. Authentication Pages
+
+🔑 Login Page → For existing users to sign in.
+
+📝 Signup Page → For new users to register.
+
+🔄 Forgot Password / Reset Page → Optional, but professional.
+
+2. Main Content Pages
+
+🏠 Home / Feed Page
+
+Shows latest blog posts from all users.
+
+Featured / trending blogs section.
+
+🔍 Explore / Discover Page
+
+Browse blogs by categories/tags.
+
+Recommended posts / popular authors.
+
+📖 Single Blog Page (Post Detail)
+
+Displays full blog content.
+
+Like, comment, and share options.
+
+3. User-Generated Content Pages
+
+✍️ Create Blog Page → Rich text editor (write + upload image).
+
+✏️ Edit Blog Page → Modify existing blog.
+
+🗂️ My Blogs Page → List of user’s own blogs (with edit/delete).
+
+📌 Bookmarks / Saved Posts Page (optional).
+
+4. Profile & Account Pages
+
+👤 Profile Page (public view)
+
+Shows user info, bio, and their blogs.
+
+⚙️ Edit Profile Page (private)
+
+Update name, bio, profile pic, social links.
+
+🔧 Account Settings Page
+
+Change password, email, preferences.
+
+5. Social / Community Pages (Optional, but nice)
+
+👥 Followers / Following Page → List of connections.
+
+💬 Comments Management Page → User’s comments on blogs.
+
+📨 Notifications Page → Alerts for likes, comments, follows.
+
+6. Utility / Other Pages
+
+❓ About Page → About the platform or team.
+
+📬 Contact Page → Support or feedback form.
+
+⚖️ Terms & Privacy Pages → Legal docs.
+
+🚫 Error Pages (404 / 500) → For broken links or server errors.
+
+
+

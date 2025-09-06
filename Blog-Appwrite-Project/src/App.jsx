@@ -8,6 +8,7 @@ import { Outlet } from 'react-router-dom'
 
 function App() {
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -19,6 +20,14 @@ function App() {
         dispatch(logout())
       }
     })
+    .catch((error) => {
+      // Only show detailed error in development
+      if (import.meta.env.DEV) {
+        console.error("App :: getCurrentUser :: error", error)
+        setError("Failed to connect to authentication service. Please check your internet connection and try again.")
+      }
+      dispatch(logout())
+    })
     .finally(() => setLoading(false))
   }, [])
   
@@ -27,7 +36,12 @@ function App() {
       <div className='w-full block'>
         <Header />
         <main>
-        TODO:  <Outlet />
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+              {error}
+            </div>
+          )}
+          <Outlet />
         </main>
         <Footer />
       </div>
