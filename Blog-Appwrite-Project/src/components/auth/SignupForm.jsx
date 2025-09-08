@@ -88,46 +88,73 @@
 // export default Signup
 
 // src/components/auth/SignupForm.jsx
-import { Link } from "react-router-dom"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
+import { Link } from "react-router-dom";
+import { Button } from "../common/Button";
+import { Card } from "../common/Card";
+import { Input } from "../common/Input";
+import { Label } from "../common/Label";
 
 const SignupForm = () => {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 w-full max-w-sm mx-auto">
       <Card>
-        <CardHeader>
-          <CardTitle>Create an account</CardTitle>
-          <CardDescription>
+        <Card.Header>
+          <Card.Title>Create an account</Card.Title>
+          <Card.Description>
             Enter your details below to create a new account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" type="text" placeholder="John Doe" required />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="m@example.com" required />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" required />
-              </div>
-              <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Sign Up
-                </Button>
-                <Button variant="outline" className="w-full">
-                  Sign up with Google
-                </Button>
-              </div>
+          </Card.Description>
+        </Card.Header>
+
+        <Card.Content>
+          <form className="flex flex-col gap-6">
+            {/* Full Name */}
+            <div className="grid gap-3">
+              <Label htmlFor="name">Full Name</Label>
+              <Input id="name" type="text" placeholder="John Doe" required />
             </div>
+
+            {/* Email */}
+            <div className="grid gap-3">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                required
+              />
+            </div>
+
+            {/* Password */}
+            <div className="grid gap-3">
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" type="password" required />
+            </div>
+
+            {/* Buttons */}
+            <div className="flex flex-col gap-3">
+              <Button
+    variant="outline"
+    className="w-full border border-black text-white font-medium rounded-lg 
+               bg-black hover:bg-white hover:text-black hover:shadow-md 
+               transform hover:active:scale-95 
+               transition-all duration-300 ease-in-out 
+               flex items-center justify-center gap-2"
+  >
+                Sign Up
+              </Button>
+              <Button
+    variant="outline"
+    className="w-full border border-black text-black font-medium rounded-lg 
+               bg-white hover:bg-black hover:text-white hover:shadow-md 
+               transform hover:active:scale-95 
+               transition-all duration-300 ease-in-out 
+               flex items-center justify-center gap-2"
+  >
+                Sign up with Google
+              </Button>
+            </div>
+
+            {/* Already have an account */}
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
               <Link to="/login" className="underline underline-offset-4">
@@ -135,10 +162,10 @@ const SignupForm = () => {
               </Link>
             </div>
           </form>
-        </CardContent>
+        </Card.Content>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default SignupForm
+export default SignupForm;

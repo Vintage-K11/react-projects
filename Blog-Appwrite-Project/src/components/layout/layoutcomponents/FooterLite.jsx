@@ -1,8 +1,8 @@
-// src/components/layouts/FooterLite.jsx
-import { ReactComponent as ReactLogo } from "../../assets/logos/react.svg";
-import { ReactComponent as TailwindLogo } from "../../assets/logos/tailwind.svg";
-import { ReactComponent as ShadcnLogo } from "../../assets/logos/shadcn.svg"; // if available
-import { ReactComponent as ReduxLogo } from "../../assets/logos/redux.svg";
+// src/components/layout/layoutcomponents/FooterLite.jsx
+import ReactLogo from "../../../assets/react.svg";
+import TailwindLogo from "../../../assets/tailwind.png";
+import ShadcnLogo from "../../../assets/shadcn.png"; // if available
+import ReduxLogo from "../../../assets/redux.png";
 
 const FooterLite = () => {
   const year = new Date().getFullYear();
@@ -17,10 +17,10 @@ const FooterLite = () => {
 
         {/* Tech Logos */}
         <div className="flex gap-3 items-center">
-          <ReactLogo className="w-5 h-5" title="React" />
-          <TailwindLogo className="w-5 h-5" title="Tailwind CSS" />
-          <ShadcnLogo className="w-5 h-5" title="shadcn/ui" />
-          <ReduxLogo className="w-5 h-5" title="Redux Toolkit" />
+          <img src={ReactLogo} alt="React" className="w-5 h-5" title="React" />
+          <img src={TailwindLogo} alt="Tailwind CSS" className="w-5 h-5" title="Tailwind CSS" />
+          <img src={ShadcnLogo} alt="shadcn/ui" className="w-5 h-5" title="shadcn/ui" />
+          <img src={ReduxLogo} alt="Redux Toolkit" className="w-5 h-5" title="Redux Toolkit" />
         </div>
 
         {/* Built With + Copyright */}

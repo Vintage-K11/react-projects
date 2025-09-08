@@ -1,7 +1,7 @@
 // src/components/blog/EditPostForm.jsx
 import { useForm, Controller } from "react-hook-form";
-import Input from "../common/Input";
-import Label from "../common/Label";
+import {Input} from "../common/Input";
+import { Label } from "../common/Label";
 import { Button } from "../common/Button";
 import RTE from "../common/RTE";
 

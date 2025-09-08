@@ -1,5 +1,5 @@
 // src/components/profile/ProfileHeader.jsx
-import { Card, CardContent } from "../common/Card";
+import { Card } from "../common/Card";
 
 const ProfileHeader = ({ user }) => {
   if (!user) return null;
@@ -17,7 +17,7 @@ const ProfileHeader = ({ user }) => {
         />
       </div>
 
-      <CardContent className="flex items-center gap-4 -mt-12 sm:-mt-16 px-6">
+      <Card.Content className="flex items-center gap-4 -mt-12 sm:-mt-16 px-6">
         <img
           src={avatar || "/default-avatar.png"}
           alt={name}
@@ -27,7 +27,7 @@ const ProfileHeader = ({ user }) => {
           <h2 className="text-2xl font-bold">{name}</h2>
           <p className="text-sm text-muted-foreground">Blogger • Member</p>
         </div>
-      </CardContent>
+      </Card.Content>
     </Card>
   );
 };

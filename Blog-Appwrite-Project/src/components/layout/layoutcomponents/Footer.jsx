@@ -142,13 +142,13 @@
 
 // export default Footer
 
-// src/components/layouts/Footer.jsx
+// src/components/layout/layoutcomponents/Footer.jsx
 import { Link } from "react-router-dom";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { ReactComponent as ReactLogo } from "../../assets/logos/react.svg";
-import { ReactComponent as TailwindLogo } from "../../assets/logos/tailwind.svg";
-import { ReactComponent as ShadcnLogo } from "../../assets/logos/shadcn.svg"; // if available
-import { ReactComponent as ReduxLogo } from "../../assets/logos/redux.svg";
+import ReactLogo from "../../../assets/react.svg";
+import TailwindLogo from "../../../assets/tailwind.png";
+import ShadcnLogo from "../../../assets/shadcn.png"; // if available
+import ReduxLogo from "../../../assets/redux.png";
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -162,10 +162,10 @@ const Footer = () => {
             Blogify
           </h1>
           <div className="flex items-center gap-2">
-            <ReactLogo className="w-6 h-6" title="React" />
-            <TailwindLogo className="w-6 h-6" title="Tailwind CSS" />
-            <ShadcnLogo className="w-6 h-6" title="shadcn/ui" />
-            <ReduxLogo className="w-6 h-6" title="Redux Toolkit" />
+            <img src={ReactLogo} alt="React" className="w-6 h-6" title="React" />
+            <img src={TailwindLogo} alt="Tailwind CSS" className="w-6 h-6" title="Tailwind CSS" />
+            <img src={ShadcnLogo} alt="shadcn/ui" className="w-6 h-6" title="shadcn/ui" />
+            <img src={ReduxLogo} alt="Redux Toolkit" className="w-6 h-6" title="Redux Toolkit" />
           </div>
         </div>
 

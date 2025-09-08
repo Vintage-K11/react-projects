@@ -76,8 +76,9 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { NavLink, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { loginUser, logoutUser } from "../../store/authSlice";
+import { loginUser, logoutUser } from "../../../store/authSlice";
 import { Menu, X, User } from "lucide-react";
+import Logo from "@/components/common/Logo"
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -96,9 +97,7 @@ const Header = () => {
     <header className="sticky top-0 z-50 bg-white shadow-sm border-b">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold text-primary hover:opacity-80 transition">
-          Blogify
-        </Link>
+        <Logo />
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">

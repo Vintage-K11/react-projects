@@ -86,27 +86,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../common/Button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../common/Card";
+import { Card } from "../common/Card";
 import { Input } from "../common/Input";
 import { Label } from "../common/Label";
-import Logo from "../common/Logo";
 
 const LoginForm = () => {
   return (
     <div className="flex flex-col gap-6 w-full max-w-sm mx-auto">
-      {/* Optional Logo at the top */}
-      <div className="flex justify-center mb-4">
-        <Logo />
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
+       <Card>
+        <Card.Header>
+          <Card.Title>Login to your account</Card.Title>
+          <Card.Description>
             Enter your email below to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </Card.Description>
+        </Card.Header>
+        <Card.Content>
           <form className="flex flex-col gap-6">
             {/* Email field */}
             <div className="grid gap-3">
@@ -135,10 +129,24 @@ const LoginForm = () => {
 
             {/* Buttons */}
             <div className="flex flex-col gap-3">
-              <Button type="submit" className="w-full">
+              <Button
+    variant="outline"
+    className="w-full border border-black text-white font-medium rounded-lg 
+               bg-black hover:bg-white hover:text-black hover:shadow-md 
+               transform hover:active:scale-95 
+               transition-all duration-300 ease-in-out 
+               flex items-center justify-center gap-2"
+  >
                 Login
               </Button>
-              <Button variant="outline" className="w-full">
+              <Button
+    variant="outline"
+    className="w-full border border-black text-black font-medium rounded-lg 
+               bg-white hover:bg-black hover:text-white hover:shadow-md 
+               transform hover:active:scale-95 
+               transition-all duration-300 ease-in-out 
+               flex items-center justify-center gap-2"
+  >
                 Login with Google
               </Button>
             </div>
@@ -151,7 +159,7 @@ const LoginForm = () => {
               </Link>
             </div>
           </form>
-        </CardContent>
+        </Card.Content>
       </Card>
     </div>
   );

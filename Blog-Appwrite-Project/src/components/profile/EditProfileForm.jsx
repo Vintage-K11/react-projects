@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { Button } from "../common/Button";
 import { Input } from "../common/Input";
-import { Textarea } from "../common/Textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "../common/Card";
+import  Textarea from "../common/Textarea";
+import { Card } from "../common/Card";
 
 const EditProfileForm = ({ user, onSave }) => {
   const [form, setForm] = useState({
@@ -24,10 +24,10 @@ const EditProfileForm = ({ user, onSave }) => {
 
   return (
     <Card className="max-w-xl mx-auto shadow-sm">
-      <CardHeader>
-        <CardTitle>Edit Profile</CardTitle>
-      </CardHeader>
-      <CardContent>
+      <Card.Header>
+        <Card.Title>Edit Profile</Card.Title>
+      </Card.Header>
+      <Card.Content>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             label="Name"
@@ -58,7 +58,7 @@ const EditProfileForm = ({ user, onSave }) => {
             Save Changes
           </Button>
         </form>
-      </CardContent>
+      </Card.Content>
     </Card>
   );
 };

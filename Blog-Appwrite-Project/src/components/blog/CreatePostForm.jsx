@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { Input } from "../common/Input";
 import { Button } from "../common/Button";
 import RTE from "../common/RTE"; // your RTE component
-import { Card, CardHeader, CardTitle, CardContent } from "../common/Card";
+import { Card } from "../common/Card";
 
 const CreatePostForm = ({ onSubmit }) => {
   const {
@@ -32,13 +32,13 @@ const CreatePostForm = ({ onSubmit }) => {
 
   return (
     <Card className="max-w-3xl mx-auto p-6">
-      <CardHeader>
+      <Card.Header>
         <CardTitle className="text-2xl font-semibold">
           Create New Post
         </CardTitle>
-      </CardHeader>
+      </Card.Header>
 
-      <CardContent>
+      <Card.Content>
         <form
           onSubmit={handleSubmit((data) => {
             if (!data.slug) {
@@ -111,7 +111,7 @@ const CreatePostForm = ({ onSubmit }) => {
             </Button>
           </div>
         </form>
-      </CardContent>
+      </Card.Content>
     </Card>
   );
 };

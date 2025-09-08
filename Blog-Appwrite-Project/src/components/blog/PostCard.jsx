@@ -23,7 +23,7 @@
 
 // export default PostCard
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../common/Card";
+import { Card } from "../common/Card";
 import { Button } from "../common/Button";
 import { Link } from "react-router-dom";
 import PostMeta from "./PostMeta";
@@ -54,15 +54,15 @@ const PostCard = ({
       )}
 
       {/* Post Header */}
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold line-clamp-2">
+      <Card.Header>
+        <Card.Title className="text-xl font-semibold line-clamp-2">
           <Link to={postLink}>{title}</Link>
-        </CardTitle>
-        {excerpt && <CardDescription className="line-clamp-3">{excerpt}</CardDescription>}
-      </CardHeader>
+        </Card.Title>
+        {excerpt && <Card.Description className="line-clamp-3">{excerpt}</Card.Description>}
+      </Card.Header>
 
       {/* Post Content */}
-      <CardContent>
+      <Card.Content>
         <div className="flex items-center justify-between mt-4">
           <PostMeta author={author} date={date} />
           <Link to={postLink}>
@@ -71,7 +71,7 @@ const PostCard = ({
             </Button>
           </Link>
         </div>
-      </CardContent>
+      </Card.Content>
     </Card>
   );
 };

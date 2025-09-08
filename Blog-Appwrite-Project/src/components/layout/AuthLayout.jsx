@@ -32,9 +32,11 @@
 
 
 // src/components/layouts/AuthLayout.jsx
-import HeaderLite from "./HeaderLite";
-import FooterLite from "./FooterLite";
-import Container from "./Container";
+import {Outlet} from "react-router-dom"
+import HeaderLite from "./layoutcomponents/HeaderLite";
+import FooterLite from "./layoutcomponents/FooterLite";
+import Container from "./layoutcomponents/Container";
+
 
 const AuthLayout = ({ children }) => {
   return (
@@ -44,7 +46,7 @@ const AuthLayout = ({ children }) => {
 
       {/* Centered Main Content using Container */}
       <Container className="flex-grow flex items-center justify-center">
-        {children}
+        <Outlet />
       </Container>
 
       {/* Minimal Footer */}

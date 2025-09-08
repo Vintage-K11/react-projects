@@ -1,13 +1,13 @@
 // src/components/profile/ProfileInfo.jsx
-import { Card, CardContent, CardHeader, CardTitle } from "../common/Card";
+import { Card } from "../common/Card";
 
 const ProfileInfo = ({ bio, location, website }) => {
   return (
     <Card className="shadow-sm">
-      <CardHeader>
-        <CardTitle>About</CardTitle>
-      </CardHeader>
-      <CardContent>
+      <Card.Header>
+        <Card.Title>About</Card.Title>
+      </Card.Header>
+      <Card.Content>
         <p className="text-muted-foreground mb-3">{bio || "No bio added yet."}</p>
 
         <ul className="text-sm space-y-2">
@@ -26,7 +26,7 @@ const ProfileInfo = ({ bio, location, website }) => {
             </li>
           )}
         </ul>
-      </CardContent>
+      </Card.Content>
     </Card>
   );
 };

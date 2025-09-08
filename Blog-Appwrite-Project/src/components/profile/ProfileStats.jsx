@@ -1,5 +1,5 @@
 // src/components/profile/ProfileStats.jsx
-import { Card, CardContent } from "../common/Card";
+import { Card} from "../common/Card";
 
 const ProfileStats = ({ stats }) => {
   if (!stats) return null;
@@ -8,7 +8,7 @@ const ProfileStats = ({ stats }) => {
 
   return (
     <Card className="shadow-sm">
-      <CardContent className="flex justify-around text-center py-4">
+      <Card.Content className="flex justify-around text-center py-4">
         <div>
           <p className="text-xl font-bold">{posts || 0}</p>
           <p className="text-sm text-muted-foreground">Posts</p>
@@ -25,7 +25,7 @@ const ProfileStats = ({ stats }) => {
           <p className="text-xl font-bold">{comments || 0}</p>
           <p className="text-sm text-muted-foreground">Comments</p>
         </div>
-      </CardContent>
+      </Card.Content>
     </Card>
   );
 };
