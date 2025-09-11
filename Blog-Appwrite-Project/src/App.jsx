@@ -59,6 +59,9 @@ import MainLayout from "./components/layout/MainLayout"
 import AuthLayout from "./components/layout/AuthLayout"
 import DashboardLayout from "./components/layout/DashboardLayout"
 
+// Auth
+import ProtectedRoute from "./components/auth/ProtectedRoute"
+
 // Pages
 import HomePage from "./pages/HomePage"
 import AboutPage from "./pages/AboutPage"
@@ -66,7 +69,7 @@ import ContactPage from "./pages/ContactPage"
 import AllPosts from "./pages/AllPosts"
 import PostPage from "./pages/PostPage"
 import CreatePostPage from "./pages/CreatePostPage"
-import EditPost from "./pages/EditPost"
+import EditPostPage from "./pages/EditPostPage"
 import LoginPage from "./pages/LoginPage"
 import SignupPage from "./pages/SignupPage"
 import ProfilePage from "./pages/ProfilePage"
@@ -93,22 +96,86 @@ function App() {
 
       {/* ---------- Auth Layout (minimal header/footer) ---------- */}
       <Route element={<AuthLayout />}>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+        <Route
+          path="/login"
+          element={
+            <ProtectedRoute authentication={false}>
+              <LoginPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <ProtectedRoute authentication={false}>
+              <SignupPage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
 
-      {/* ---------- Dashboard Layout (protected/admin area) ---------- */}
+      {/* ---------- Dashboard Layout (protected area) ---------- */}
       <Route element={<DashboardLayout />}>
-        <Route path="/dashboard" element={<UserDashboard />} />
-        <Route path="/dashboard/admin" element={<AdminDashboard />} />
-        <Route path="/profile/:id" element={<ProfilePage />} />
-        <Route path="/profile/:id/edit" element={<EditProfile />} />
-        <Route path="/settings" element={<BlogSettings />} />
-        <Route path="/post/create" element={<CreatePostPage />} />
-        <Route path="/post/:id/edit" element={<EditPost />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <UserDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/admin"
+          element={
+            <ProtectedRoute requireAdmin>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile/:id"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile/:id/edit"
+          element={
+            <ProtectedRoute>
+              <EditProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <BlogSettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/post/create"
+          element={
+            <ProtectedRoute>
+              <CreatePostPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/post/:id/edit"
+          element={
+            <ProtectedRoute>
+              <EditPostPage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
     </Routes>
   )
 }
 
 export default App
+

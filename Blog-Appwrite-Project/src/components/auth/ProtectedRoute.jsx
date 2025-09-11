@@ -1,18 +1,24 @@
-// src/components/auth/ProtectedRoute.jsx
 import React from "react";
 import { Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-// Temporary demo wrapper
-// Later, replace `isAuthenticated` with real Redux/auth logic
-const ProtectedRoute = ({ children, authentication = true }) => {
-  const isAuthenticated = false; // demo: always false for now
+const ProtectedRoute = ({ children, authentication = true, requireAdmin = false }) => {
+  const { user } = useSelector((state) => state.auth);
+  const isAuthenticated = !!user;
 
+  // Redirect non-authenticated users trying to access protected routes
   if (authentication && !isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
+  // Prevent logged-in users from accessing login/signup
   if (!authentication && isAuthenticated) {
     return <Navigate to="/" replace />;
+  }
+
+  // Restrict admin-only routes
+  if (requireAdmin && user?.role !== "admin") {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;

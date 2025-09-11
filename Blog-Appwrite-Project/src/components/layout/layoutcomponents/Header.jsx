@@ -1,84 +1,10 @@
-// import React from 'react'
-// import {Container, Logo, LogoutBtn} from '../index'
-// import { Link } from 'react-router-dom'
-// import {useSelector} from 'react-redux'
-// import { useNavigate } from 'react-router-dom'
-
-// function Header() {
-//   const authStatus = useSelector((state) => state.auth.status)
-//   const navigate = useNavigate()
-
-//   const navItems = [
-//     {
-//       name: 'Home',
-//       slug: "/",
-//       active: true
-//     },
-//     {
-//       name: "Login",
-//       slug: "/login",
-//       active: !authStatus,
-//   },
-//   {
-//       name: "Signup",
-//       slug: "/signup",
-//       active: !authStatus,
-//   },
-//   {
-//       name: "All Posts",
-//       slug: "/all-posts",
-//       active: authStatus,
-//   },
-//   {
-//       name: "Add Post",
-//       slug: "/add-post",
-//       active: authStatus,
-//   },
-//   ]
-
-
-//   return (
-//     <header className='py-3 shadow bg-gray-500'>
-//       <Container>
-//         <nav className='flex'>
-//           <div className='mr-4'>
-//             <Link to='/'>
-//               <Logo width='70px'   />
-
-//               </Link>
-//           </div>
-//           <ul className='flex ml-auto'>
-//             {navItems.map((item) =>
-//             item.active ? (
-//               <li key={item.name}>
-//                 <button
-//                 onClick={() => navigate(item.slug)}
-//                 className='inline-bock px-6 py-2 duration-200 hover:bg-blue-100 rounded-full'
-//                 >{item.name}</button>
-//               </li>
-//             ) : null
-//             )}
-//             {authStatus && (
-//               <li>
-//                 <LogoutBtn />
-//               </li>
-//             )}
-//           </ul>
-//         </nav>
-//         </Container>
-//     </header>
-//   )
-// }
-
-// export default Header
-
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { NavLink, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { loginUser, logoutUser } from "../../../store/authSlice";
 import { Menu, X, User } from "lucide-react";
-import Logo from "@/components/common/Logo"
+import Logo from "@/components/common/Logo";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -94,7 +20,7 @@ const Header = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm border-b">
+    <header className="sticky top-0 z-50 bg-white shadow-sm ">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
         <Logo />
@@ -106,7 +32,7 @@ const Header = () => {
               key={link.name}
               to={link.path}
               className={({ isActive }) =>
-                `font-medium text-gray-700 hover:text-primary transition ${
+                `font-medium text-gray-700 hover:text-primary transition-all duration-300 ${
                   isActive ? "text-primary underline" : ""
                 }`
               }
@@ -117,7 +43,7 @@ const Header = () => {
           {status && (
             <NavLink
               to="/create-post"
-              className="font-medium text-gray-700 hover:text-primary transition"
+              className="font-medium text-gray-700 hover:text-primary transition-all duration-300"
             >
               Create Post
             </NavLink>
@@ -139,7 +65,7 @@ const Header = () => {
             <div className="relative">
               <button
                 onClick={() => setUserDropdown(!userDropdown)}
-                className="flex items-center gap-2 font-medium text-gray-700 hover:text-primary transition"
+                className="flex items-center gap-2 font-medium text-gray-700 hover:text-primary transition-all duration-300"
               >
                 <User className="w-5 h-5" />
                 {userData?.name || "User"}
@@ -167,7 +93,7 @@ const Header = () => {
                     Settings
                   </Link>
                   <button
-                    onClick={() => dispatch(logout())}
+                    onClick={() => dispatch(logoutUser())}
                     className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-100"
                   >
                     Logout
@@ -181,7 +107,11 @@ const Header = () => {
         {/* Mobile Hamburger */}
         <div className="md:hidden flex items-center">
           <button onClick={() => setMobileOpen(!mobileOpen)}>
-            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileOpen ? (
+              <X className="w-6 h-6 text-gray-700" />
+            ) : (
+              <Menu className="w-6 h-6 text-gray-700" />
+            )}
           </button>
         </div>
       </div>
@@ -195,7 +125,7 @@ const Header = () => {
               to={link.path}
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) =>
-                `font-medium text-gray-700 hover:text-primary transition ${
+                `font-medium text-gray-700 hover:text-primary transition-all duration-300 ${
                   isActive ? "text-primary underline" : ""
                 }`
               }
@@ -207,7 +137,7 @@ const Header = () => {
             <NavLink
               to="/create-post"
               onClick={() => setMobileOpen(false)}
-              className="font-medium text-gray-700 hover:text-primary transition"
+              className="font-medium text-gray-700 hover:text-primary transition-all duration-300"
             >
               Create Post
             </NavLink>
@@ -238,7 +168,7 @@ const Header = () => {
               </Link>
               <button
                 onClick={() => {
-                 dispatch(logoutUser());
+                  dispatch(logoutUser());
                   setMobileOpen(false);
                 }}
                 className="text-red-600 text-left"
