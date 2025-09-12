@@ -83,25 +83,57 @@
 // export default Login
 
 // src/components/auth/LoginForm.jsx
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  loginUser,
+  selectAuthStatus,
+  selectAuthError,
+  selectCurrentUser,
+} from "@/store/authSlice";
 import { Button } from "../common/Button";
 import { Card } from "../common/Card";
 import { Input } from "../common/Input";
 import { Label } from "../common/Label";
 
 const LoginForm = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const status = useSelector(selectAuthStatus);
+  const error = useSelector(selectAuthError);
+  const currentUser = useSelector(selectCurrentUser);
+
+  // ✅ Auto-redirect if already logged in
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [currentUser, navigate]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const result = await dispatch(loginUser({ email, password })).unwrap();
+      if (result) navigate("/dashboard");
+    } catch (err) {
+      console.error("❌ Login failed:", err);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6 w-full max-w-sm mx-auto">
-       <Card>
+      <Card>
         <Card.Header>
           <Card.Title>Login to your account</Card.Title>
           <Card.Description>
-            Enter your email below to login to your account
+            Enter your email and password to login
           </Card.Description>
         </Card.Header>
         <Card.Content>
-          <form className="flex flex-col gap-6">
+          <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
             {/* Email field */}
             <div className="grid gap-3">
               <Label htmlFor="email">Email</Label>
@@ -110,6 +142,8 @@ const LoginForm = () => {
                 type="email"
                 placeholder="m@example.com"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -124,29 +158,46 @@ const LoginForm = () => {
                   Forgot your password?
                 </Link>
               </div>
-              <Input id="password" type="password" required />
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
+
+            {/* Error message */}
+            {status === "error" && error && (
+              <p className="text-red-500 text-sm text-center">
+                {error || "Login failed. Please try again."}
+              </p>
+            )}
 
             {/* Buttons */}
             <div className="flex flex-col gap-3">
               <Button
-    variant="outline"
-    className="w-full border border-black text-white font-medium rounded-lg 
-               bg-black hover:bg-white hover:text-black hover:shadow-md 
-               transform hover:active:scale-95 
-               transition-all duration-300 ease-in-out 
-               flex items-center justify-center gap-2"
-  >
-                Login
+                type="submit"
+                variant="outline"
+                className="w-full border border-black text-white font-medium rounded-lg 
+                           bg-black hover:bg-white hover:text-black hover:shadow-md 
+                           transform hover:active:scale-95 
+                           transition-all duration-300 ease-in-out 
+                           flex items-center justify-center gap-2"
+                disabled={status === "loading"}
+              >
+                {status === "loading" ? "Logging in..." : "Login"}
               </Button>
+
               <Button
-    variant="outline"
-    className="w-full border border-black text-black font-medium rounded-lg 
-               bg-white hover:bg-black hover:text-white hover:shadow-md 
-               transform hover:active:scale-95 
-               transition-all duration-300 ease-in-out 
-               flex items-center justify-center gap-2"
-  >
+                type="button"
+                variant="outline"
+                className="w-full border border-black text-black font-medium rounded-lg 
+                           bg-white hover:bg-black hover:text-white hover:shadow-md 
+                           transform hover:active:scale-95 
+                           transition-all duration-300 ease-in-out 
+                           flex items-center justify-center gap-2"
+              >
                 Login with Google
               </Button>
             </div>

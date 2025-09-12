@@ -80,6 +80,20 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+// Async thunk: Signup user
+export const signupUser = createAsyncThunk(
+  "auth/signupUser",
+  async ({ name, email, password }, { rejectWithValue }) => {
+    try {
+      await authService.createAccount({ name, email, password });
+      const user = await authService.getCurrentUser();
+      return user;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Async thunk: Logout user
 export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
   await authService.logout();
@@ -121,6 +135,20 @@ const authSlice = createSlice({
         state.userData = action.payload;
       })
       .addCase(loginUser.rejected, (state, action) => {
+        state.status = "error";
+        state.error = action.payload;
+      })
+
+      // signup
+      .addCase(signupUser.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(signupUser.fulfilled, (state, action) => {
+        state.status = "authenticated";
+        state.userData = action.payload;
+      })
+      .addCase(signupUser.rejected, (state, action) => {
         state.status = "error";
         state.error = action.payload;
       })

@@ -88,13 +88,48 @@
 // export default Signup
 
 // src/components/auth/SignupForm.jsx
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signupUser,
+  selectAuthStatus,
+  selectAuthError,
+  selectCurrentUser,
+} from "@/store/authSlice";
 import { Button } from "../common/Button";
 import { Card } from "../common/Card";
 import { Input } from "../common/Input";
 import { Label } from "../common/Label";
 
 const SignupForm = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const status = useSelector(selectAuthStatus);
+  const error = useSelector(selectAuthError);
+  const currentUser = useSelector(selectCurrentUser);
+
+  // ✅ Redirect if user is already logged in
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [currentUser, navigate]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const result = await dispatch(signupUser({ name, email, password })).unwrap();
+      if (result) navigate("/dashboard");
+    } catch (err) {
+      console.error("❌ Signup failed:", err);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6 w-full max-w-sm mx-auto">
       <Card>
@@ -106,11 +141,18 @@ const SignupForm = () => {
         </Card.Header>
 
         <Card.Content>
-          <form className="flex flex-col gap-6">
+          <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
             {/* Full Name */}
             <div className="grid gap-3">
               <Label htmlFor="name">Full Name</Label>
-              <Input id="name" type="text" placeholder="John Doe" required />
+              <Input
+                id="name"
+                type="text"
+                placeholder="John Doe"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </div>
 
             {/* Email */}
@@ -121,35 +163,54 @@ const SignupForm = () => {
                 type="email"
                 placeholder="m@example.com"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
             {/* Password */}
             <div className="grid gap-3">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
+
+            {/* Error message */}
+            {status === "error" && (
+              <p className="text-red-500 text-sm text-center">
+                {error || "Signup failed. Please try again."}
+              </p>
+            )}
 
             {/* Buttons */}
             <div className="flex flex-col gap-3">
               <Button
-    variant="outline"
-    className="w-full border border-black text-white font-medium rounded-lg 
-               bg-black hover:bg-white hover:text-black hover:shadow-md 
-               transform hover:active:scale-95 
-               transition-all duration-300 ease-in-out 
-               flex items-center justify-center gap-2"
-  >
-                Sign Up
+                type="submit"
+                variant="outline"
+                className="w-full border border-black text-white font-medium rounded-lg 
+                           bg-black hover:bg-white hover:text-black hover:shadow-md 
+                           transform hover:active:scale-95 
+                           transition-all duration-300 ease-in-out 
+                           flex items-center justify-center gap-2"
+                disabled={status === "loading"}
+              >
+                {status === "loading" ? "Signing up..." : "Sign Up"}
               </Button>
+
               <Button
-    variant="outline"
-    className="w-full border border-black text-black font-medium rounded-lg 
-               bg-white hover:bg-black hover:text-white hover:shadow-md 
-               transform hover:active:scale-95 
-               transition-all duration-300 ease-in-out 
-               flex items-center justify-center gap-2"
-  >
+                type="button"
+                variant="outline"
+                className="w-full border border-black text-black font-medium rounded-lg 
+                           bg-white hover:bg-black hover:text-white hover:shadow-md 
+                           transform hover:active:scale-95 
+                           transition-all duration-300 ease-in-out 
+                           flex items-center justify-center gap-2"
+              >
                 Sign up with Google
               </Button>
             </div>

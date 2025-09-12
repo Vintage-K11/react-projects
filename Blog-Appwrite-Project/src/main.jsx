@@ -87,23 +87,35 @@
 
 
 
-// src/main.jsx
-import React from "react"
-import ReactDOM from "react-dom/client"
-import { Provider } from "react-redux"
-import { BrowserRouter } from "react-router-dom"
-import App from "./App"
-import store from "./store/store"
+/// src/main.jsx
+import React, { useEffect } from "react";
+import ReactDOM from "react-dom/client";
+import { Provider, useDispatch } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
+import store from "./store/store";
+import { fetchCurrentUser } from "@/store/authSlice";
 
-import "./index.css"  // Tailwind + global styles
-import "./App.css"    // Optional extra styling
+import "./index.css";  // Tailwind + global styles
+import "./App.css";    // Optional extra styling
+
+// Wrapper component to dispatch fetchCurrentUser on app load
+const Root = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchCurrentUser());
+  }, [dispatch]);
+
+  return <App />;
+};
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <App />
+        <Root />
       </BrowserRouter>
     </Provider>
   </React.StrictMode>
-)
+);

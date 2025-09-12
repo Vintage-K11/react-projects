@@ -52,36 +52,46 @@
 // export default App
 
 // src/App.jsx
-import { Routes, Route } from "react-router-dom"
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { Routes, Route } from "react-router-dom";
 
 // Layouts
-import MainLayout from "./components/layout/MainLayout"
-import AuthLayout from "./components/layout/AuthLayout"
-import DashboardLayout from "./components/layout/DashboardLayout"
+import MainLayout from "./components/layout/MainLayout";
+import AuthLayout from "./components/layout/AuthLayout";
+import DashboardLayout from "./components/layout/DashboardLayout";
 
 // Auth
-import ProtectedRoute from "./components/auth/ProtectedRoute"
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import { fetchCurrentUser } from "./store/authSlice";
 
 // Pages
-import HomePage from "./pages/HomePage"
-import AboutPage from "./pages/AboutPage"
-import ContactPage from "./pages/ContactPage"
-import AllPosts from "./pages/AllPosts"
-import PostPage from "./pages/PostPage"
-import CreatePostPage from "./pages/CreatePostPage"
-import EditPostPage from "./pages/EditPostPage"
-import LoginPage from "./pages/LoginPage"
-import SignupPage from "./pages/SignupPage"
-import ProfilePage from "./pages/ProfilePage"
-import EditProfile from "./pages/EditProfile"
-import BlogSettings from "./pages/BlogSettings"
-import NotFound from "./pages/NotFound"
+import HomePage from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import AllPosts from "./pages/AllPosts";
+import PostPage from "./pages/PostPage";
+import CreatePostPage from "./pages/CreatePostPage";
+import EditPostPage from "./pages/EditPostPage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import ProfilePage from "./pages/ProfilePage";
+import EditProfile from "./pages/EditProfile";
+import BlogSettings from "./pages/BlogSettings";
+import NotFound from "./pages/NotFound";
 
 // Dashboard Pages
-import AdminDashboard from "./pages/dashboard/AdminDashboard"
-import UserDashboard from "./pages/dashboard/UserDashboard"
+import AdminDashboard from "./pages/dashboard/AdminDashboard";
+import UserDashboard from "./pages/dashboard/UserDashboard";
 
 function App() {
+  const dispatch = useDispatch();
+
+  // Restore user session on app start
+  useEffect(() => {
+    dispatch(fetchCurrentUser());
+  }, [dispatch]);
+
   return (
     <Routes>
       {/* ---------- Main Public Layout ---------- */}
@@ -174,8 +184,7 @@ function App() {
         />
       </Route>
     </Routes>
-  )
+  );
 }
 
-export default App
-
+export default App;

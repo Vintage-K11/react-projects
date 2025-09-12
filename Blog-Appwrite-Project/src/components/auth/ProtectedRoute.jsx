@@ -1,9 +1,11 @@
+// src/components/auth/ProtectedRoute.jsx
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { selectCurrentUser } from "@/store/authSlice";
 
 const ProtectedRoute = ({ children, authentication = true, requireAdmin = false }) => {
-  const { user } = useSelector((state) => state.auth);
+  const user = useSelector(selectCurrentUser);
   const isAuthenticated = !!user;
 
   // Redirect non-authenticated users trying to access protected routes
