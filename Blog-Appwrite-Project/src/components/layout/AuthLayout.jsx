@@ -42,7 +42,7 @@ const AuthLayout = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Minimal Header */}
-      <HeaderLite />
+      <HeaderLite variant="lite" />
 
       {/* Centered Main Content using Container */}
       <Container className="flex-grow flex items-center justify-center">

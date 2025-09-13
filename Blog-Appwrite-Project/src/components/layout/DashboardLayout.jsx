@@ -1,28 +1,18 @@
-// src/components/layout/DashboardLayout.jsx
 import React, { useState } from "react";
 import Sidebar from "./layoutcomponents/Sidebar";
-import Header from "./layoutcomponents/Header";
+import HeaderLite from "./layoutcomponents/HeaderLite";
 import FooterLite from "./layoutcomponents/FooterLite";
 
 const DashboardLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
+    <div className="flex h-screen bg-gray-50">
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
-
-      {/* Main Content */}
-      <div className="flex flex-col flex-1">
-        {/* Header */}
-        <Header toggleSidebar={toggleSidebar} />
-
-        {/* Page Content */}
-        <main className="flex-1 p-6">{children}</main>
-
-        {/* Footer Lite */}
+      <div className="flex flex-col flex-1 min-h-screen">
+        <HeaderLite variant="dashboard" toggleSidebar={toggleSidebar} />
+        <main className="flex-1 overflow-y-auto p-6">{children}</main>
         <FooterLite />
       </div>
     </div>

@@ -16,18 +16,20 @@
 // export default store;
 
 // src/store/store.js
-import { configureStore } from '@reduxjs/toolkit';
-
-// Dummy reducers just to satisfy imports
-const dummyReducer = (state = {}, action) => state;
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./authSlice";
+import postReducer from "./postSlice";
+import commentReducer from "./commentSlice";
+import profileReducer from "./profileSlice";
 
 const store = configureStore({
   reducer: {
-    auth: dummyReducer,
-    post: dummyReducer,
-    comment: dummyReducer,
-    profile: dummyReducer,
+    auth: authReducer,
+    post: postReducer,
+    comments: commentReducer,  // note: renamed to 'comments' for clarity
+    profile: profileReducer,
   },
+  devTools: process.env.NODE_ENV !== "production", // enable Redux DevTools only in dev
 });
 
 export default store;

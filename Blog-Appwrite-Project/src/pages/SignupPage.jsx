@@ -11,23 +11,15 @@
 
 // export default Signup
 
+// src/pages/SignupPage.jsx
 import React from "react";
 import SignupForm from "@/components/auth/SignupForm";
-import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
-  const navigate = useNavigate();
-
-  const handleSignup = (data) => {
-    // TODO: signup logic
-    console.log("Signup", data);
-    navigate("/");
-  };
-
   return (
-      <div className="w-full max-w-md">
-        <SignupForm onSubmit={handleSignup} />
-      </div>
+    <div className="w-full max-w-md mx-auto">
+      <SignupForm />
+    </div>
   );
 };
 

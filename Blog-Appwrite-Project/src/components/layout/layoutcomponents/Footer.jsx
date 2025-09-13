@@ -142,71 +142,45 @@
 
 // export default Footer
 
-// src/components/layout/layoutcomponents/Footer.jsx
 import { Link } from "react-router-dom";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import ReactLogo from "../../../assets/react.svg";
 import TailwindLogo from "../../../assets/tailwind.png";
-import ShadcnLogo from "../../../assets/shadcn.png"; // if available
+import ShadcnLogo from "../../../assets/shadcn.png";
 import ReduxLogo from "../../../assets/redux.png";
 
 const Footer = () => {
   const year = new Date().getFullYear();
-
   return (
     <footer className="bg-gray-900 text-gray-300 py-8">
       <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-        {/* Logo + Tech Credit Logos */}
         <div className="flex flex-col items-center md:items-start gap-2">
-          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
-            Blogify
-          </h1>
+          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">Blogify</h1>
           <div className="flex items-center gap-2">
             <img src={ReactLogo} alt="React" className="w-6 h-6" title="React" />
-            <img src={TailwindLogo} alt="Tailwind CSS" className="w-6 h-6" title="Tailwind CSS" />
-            <img src={ShadcnLogo} alt="shadcn/ui" className="w-6 h-6" title="shadcn/ui" />
-            <img src={ReduxLogo} alt="Redux Toolkit" className="w-6 h-6" title="Redux Toolkit" />
+            <img src={TailwindLogo} alt="Tailwind" className="w-6 h-6" title="Tailwind" />
+            <img src={ShadcnLogo} alt="Shadcn UI" className="w-6 h-6" title="Shadcn UI" />
+            <img src={ReduxLogo} alt="Redux" className="w-6 h-6" title="Redux" />
           </div>
         </div>
 
-        {/* Quick Links */}
         <div className="flex gap-4 flex-wrap justify-center md:justify-start">
-          <Link to="/" className="hover:underline">
-            Home
-          </Link>
-          <Link to="/all-posts" className="hover:underline">
-            All Posts
-          </Link>
-          <Link to="/about" className="hover:underline">
-            About
-          </Link>
-          <Link to="/contact" className="hover:underline">
-            Contact
-          </Link>
+          <Link to="/" className="hover:underline">Home</Link>
+          <Link to="/all-posts" className="hover:underline">All Posts</Link>
+          <Link to="/about" className="hover:underline">About</Link>
+          <Link to="/contact" className="hover:underline">Contact</Link>
         </div>
 
-        {/* Social Icons */}
         <div className="flex gap-4 items-center">
-          <a
-            href="https://github.com/YourGitHub"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-white"
-          >
+          <a href="https://github.com/YourGitHub" target="_blank" rel="noopener noreferrer" className="hover:text-white">
             <FaGithub size={24} />
           </a>
-          <a
-            href="https://linkedin.com/in/YourLinkedIn"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-white"
-          >
+          <a href="https://linkedin.com/in/YourLinkedIn" target="_blank" rel="noopener noreferrer" className="hover:text-white">
             <FaLinkedin size={24} />
           </a>
         </div>
       </div>
 
-      {/* Built With + Copyright */}
       <div className="mt-6 text-center text-gray-400 text-sm">
         Built with React, Tailwind CSS, shadcn/ui & Redux Toolkit | © {year} Blogify
       </div>

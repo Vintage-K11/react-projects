@@ -87,14 +87,14 @@ import UserDashboard from "./pages/dashboard/UserDashboard";
 function App() {
   const dispatch = useDispatch();
 
-  // Restore user session on app start
+  // ✅ Fetch user session on app mount
   useEffect(() => {
     dispatch(fetchCurrentUser());
   }, [dispatch]);
 
   return (
     <Routes>
-      {/* ---------- Main Public Layout ---------- */}
+      {/* ---------- Public Pages ---------- */}
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
@@ -104,12 +104,12 @@ function App() {
         <Route path="*" element={<NotFound />} />
       </Route>
 
-      {/* ---------- Auth Layout (minimal header/footer) ---------- */}
+      {/* ---------- Auth Pages ---------- */}
       <Route element={<AuthLayout />}>
         <Route
           path="/login"
           element={
-            <ProtectedRoute authentication={false}>
+            <ProtectedRoute authentication={false} redirectTo="/">
               <LoginPage />
             </ProtectedRoute>
           }
@@ -117,14 +117,14 @@ function App() {
         <Route
           path="/signup"
           element={
-            <ProtectedRoute authentication={false}>
+            <ProtectedRoute authentication={false} redirectTo="/">
               <SignupPage />
             </ProtectedRoute>
           }
         />
       </Route>
 
-      {/* ---------- Dashboard Layout (protected area) ---------- */}
+      {/* ---------- Dashboard / Protected Area ---------- */}
       <Route element={<DashboardLayout />}>
         <Route
           path="/dashboard"

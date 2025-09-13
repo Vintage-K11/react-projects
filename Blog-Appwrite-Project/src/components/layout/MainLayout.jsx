@@ -2,29 +2,17 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./layoutcomponents/Header";
 import Footer from "./layoutcomponents/Footer";
-import Container from "./layoutcomponents/Container";
 
-// 3-Column Layout (for Blog/CRUD pages)
 const ThreeColumnLayout = () => (
   <div className="flex min-h-screen">
-    {/* Left Sidebar */}
-    <div className="w-1/4 bg-gray-200 sticky top-0 h-screen p-4">
-      <p>Left Sidebar</p>
-    </div>
-
-    {/* Main Content (Scrollable) */}
+    <div className="w-1/4 bg-gray-200 sticky top-0 h-screen p-4">Left Sidebar</div>
     <main className="flex-1 overflow-auto p-4">
       <Outlet />
     </main>
-
-    {/* Right Sidebar */}
-    <div className="w-1/4 bg-gray-200 sticky top-0 h-screen p-4">
-      <p>Right Sidebar</p>
-    </div>
+    <div className="w-1/4 bg-gray-200 sticky top-0 h-screen p-4">Right Sidebar</div>
   </div>
 );
 
-// Full-Width Layout (for pages like Home, About, Contact, etc.)
 const FullWidthLayout = () => (
   <div className="w-full min-h-screen">
     <main>
@@ -35,6 +23,8 @@ const FullWidthLayout = () => (
 
 const MainLayout = () => {
   const location = useLocation();
+
+  // Force re-render of Header whenever route changes
   const isBlogPage =
     location.pathname.includes("/post") ||
     location.pathname.includes("/create") ||
@@ -42,11 +32,8 @@ const MainLayout = () => {
 
   return (
     <div className="flex flex-col min-h-screen w-full">
-      <Header />
-
-      {/* Conditionally render Full Width or 3-Column Layout */}
+      <Header key={location.key} /> {/* ✅ Forces Header to re-render on route/user changes */}
       {isBlogPage ? <ThreeColumnLayout /> : <FullWidthLayout />}
-
       <Footer />
     </div>
   );

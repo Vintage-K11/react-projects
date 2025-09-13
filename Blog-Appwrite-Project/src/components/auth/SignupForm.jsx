@@ -89,14 +89,9 @@
 
 // src/components/auth/SignupForm.jsx
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  signupUser,
-  selectAuthStatus,
-  selectAuthError,
-  selectCurrentUser,
-} from "@/store/authSlice";
+import { useNavigate, Link } from "react-router-dom";
+import { signupUser, selectAuthStatus, selectAuthError, selectCurrentUser } from "@/store/authSlice";
 import { Button } from "../common/Button";
 import { Card } from "../common/Card";
 import { Input } from "../common/Input";
@@ -106,6 +101,7 @@ const SignupForm = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -113,10 +109,10 @@ const SignupForm = () => {
   const error = useSelector(selectAuthError);
   const currentUser = useSelector(selectCurrentUser);
 
-  // ✅ Redirect if user is already logged in
+  // ✅ Redirect if already logged in
   useEffect(() => {
     if (currentUser) {
-      navigate("/dashboard", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [currentUser, navigate]);
 
@@ -124,20 +120,21 @@ const SignupForm = () => {
     e.preventDefault();
     try {
       const result = await dispatch(signupUser({ name, email, password })).unwrap();
-      if (result) navigate("/dashboard");
+      if (result) {
+        // ✅ Signup successful, user is logged in
+        navigate("/"); // redirect to homepage
+      }
     } catch (err) {
       console.error("❌ Signup failed:", err);
     }
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-sm mx-auto">
+    <div className="flex flex-col gap-6 w-full max-w-sm mx-auto my-20">
       <Card>
         <Card.Header>
           <Card.Title>Create an account</Card.Title>
-          <Card.Description>
-            Enter your details below to create a new account
-          </Card.Description>
+          <Card.Description>Enter your details to sign up</Card.Description>
         </Card.Header>
 
         <Card.Content>
@@ -180,45 +177,24 @@ const SignupForm = () => {
               />
             </div>
 
-            {/* Error message */}
+            {/* Error Message */}
             {status === "error" && (
-              <p className="text-red-500 text-sm text-center">
-                {error || "Signup failed. Please try again."}
-              </p>
+              <p className="text-red-500 text-sm text-center">{error || "Signup failed."}</p>
             )}
 
-            {/* Buttons */}
-            <div className="flex flex-col gap-3">
-              <Button
-                type="submit"
-                variant="outline"
-                className="w-full border border-black text-white font-medium rounded-lg 
-                           bg-black hover:bg-white hover:text-black hover:shadow-md 
-                           transform hover:active:scale-95 
-                           transition-all duration-300 ease-in-out 
-                           flex items-center justify-center gap-2"
-                disabled={status === "loading"}
-              >
-                {status === "loading" ? "Signing up..." : "Sign Up"}
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full border border-black text-black font-medium rounded-lg 
-                           bg-white hover:bg-black hover:text-white hover:shadow-md 
-                           transform hover:active:scale-95 
-                           transition-all duration-300 ease-in-out 
-                           flex items-center justify-center gap-2"
-              >
-                Sign up with Google
-              </Button>
-            </div>
+            {/* Signup Button */}
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={status === "loading"}
+            >
+              {status === "loading" ? "Signing up..." : "Sign Up"}
+            </Button>
 
             {/* Already have an account */}
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
-              <Link to="/login" className="underline underline-offset-4">
+              <Link to="/login" className="underline">
                 Login
               </Link>
             </div>
