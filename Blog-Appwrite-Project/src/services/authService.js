@@ -1,59 +1,3 @@
-// // src/services/authService.js
-// import conf from '../conf/conf.js';
-// import { Client, Account, ID } from "appwrite";
-
-// class AuthService {
-//     client;
-//     account;
-
-//     constructor() {
-//         this.client = new Client()
-//             .setEndpoint(conf.appwriteUrl)
-//             .setProject(conf.appwriteProjectId);
-
-//         this.account = new Account(this.client);
-//         console.log("✅ AuthService initialized");
-//     }
-
-//     async createAccount({ email, password, name }) {
-//         try {
-//             return await this.account.create(ID.unique(), email, password, name);
-//         } catch (error) {
-//             console.error("❌ createAccount error:", error);
-//             throw error;
-//         }
-//     }
-
-//     async login({ email, password }) {
-//         try {
-//             return await this.account.createEmailPasswordSession(email, password);
-//         } catch (error) {
-//             console.error("❌ login error:", error);
-//             throw error;
-//         }
-//     }
-
-//     async getCurrentUser() {
-//         try {
-//             return await this.account.get();
-//         } catch (error) {
-//             return null;
-//         }
-//     }
-
-//     async logout() {
-//         try {
-//             await this.account.deleteSession('current');
-//         } catch (error) {
-//             console.error("❌ logout error:", error);
-//         }
-//     }
-// }
-
-// const authService = new AuthService();
-// export default authService;
-
-
 // src/services/authService.js
 import conf from "@/conf";
 import { Client, Account, ID } from "appwrite";
@@ -66,25 +10,21 @@ class AuthService {
 
     this.account = new Account(this.client);
 
-    console.log("✅ AuthService initialized");
+    if (!conf.appwriteUrl || !conf.appwriteProjectId) {
+      console.warn("⚠️ AuthService: Missing Appwrite configuration values.");
+    } else {
+      console.log("✅ AuthService initialized");
+    }
   }
 
-  /**
-   * Create a new account and auto-login
-   * @param {Object} param0
-   * @param {string} param0.email
-   * @param {string} param0.password
-   * @param {string} param0.name
-   * @returns {Promise<Object>} created user document
-   */
+  // ==========================
+  // Create account + auto-login
+  // ==========================
   async createAccount({ email, password, name }) {
+    if (!email || !password) throw new Error("Email and password are required");
+
     try {
-      const userAccount = await this.account.create(
-        ID.unique(),
-        email,
-        password,
-        name
-      );
+      const userAccount = await this.account.create(ID.unique(), email, password, name);
 
       // Auto-login after signup
       await this.login({ email, password });
@@ -96,51 +36,45 @@ class AuthService {
     }
   }
 
-  /**
-   * Login with email and password
-   * @param {Object} param0
-   * @param {string} param0.email
-   * @param {string} param0.password
-   * @returns {Promise<{ session: Object, user: Object }>}
-   */
+  // ==========================
+  // Login user
+  // ==========================
   async login({ email, password }) {
+    if (!email || !password) throw new Error("Email and password are required");
+
     try {
-      // Ensure no old session exists (safety)
+      // Delete current session if exists (avoid multiple sessions)
       try {
         await this.account.deleteSession("current");
-      } catch {
-        /* ignore if no session */
+      } catch (err) {
+        // Ignore if no current session
       }
 
-      const session = await this.account.createEmailPasswordSession(
-        email,
-        password
-      );
+      const session = await this.account.createEmailPasswordSession(email, password);
       const user = await this.account.get();
 
-      return { session, user };
+      return user; // Only return user for Redux state
     } catch (error) {
       console.error("❌ AuthService.login error:", error.message);
       throw error;
     }
   }
 
-  /**
-   * Get current logged-in user
-   * @returns {Promise<Object|null>}
-   */
+  // ==========================
+  // Get current logged-in user
+  // ==========================
   async getCurrentUser() {
     try {
-      return await this.account.get();
+      const user = await this.account.get();
+      return user;
     } catch {
-      return null; // No active session
+      return null; // Not logged in
     }
   }
 
-  /**
-   * Logout current session
-   * @returns {Promise<boolean>}
-   */
+  // ==========================
+  // Logout current session
+  // ==========================
   async logout() {
     try {
       await this.account.deleteSession("current");
@@ -152,24 +86,9 @@ class AuthService {
     }
   }
 
-  /**
-   * List all active sessions (devices)
-   * @returns {Promise<Array>}
-   */
-  async listSessions() {
-    try {
-      const result = await this.account.listSessions();
-      return result.sessions || [];
-    } catch (error) {
-      console.error("❌ AuthService.listSessions error:", error.message);
-      throw error;
-    }
-  }
-
-  /**
-   * Logout from all devices
-   * @returns {Promise<boolean>}
-   */
+  // ==========================
+  // Logout from all devices
+  // ==========================
   async logoutAll() {
     try {
       await this.account.deleteSessions();
@@ -177,6 +96,19 @@ class AuthService {
       return true;
     } catch (error) {
       console.error("❌ AuthService.logoutAll error:", error.message);
+      throw error;
+    }
+  }
+
+  // ==========================
+  // List all active sessions
+  // ==========================
+  async listSessions() {
+    try {
+      const res = await this.account.listSessions();
+      return res.sessions || [];
+    } catch (error) {
+      console.error("❌ AuthService.listSessions error:", error.message);
       throw error;
     }
   }

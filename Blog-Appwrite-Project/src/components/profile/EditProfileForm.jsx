@@ -1,9 +1,10 @@
 // src/components/profile/EditProfileForm.jsx
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
 import { Button } from "../common/Button";
 import { Input } from "../common/Input";
-import { Textarea } from "../common/Textarea";
+import Textarea from "../common/Textarea";
 import { Card } from "../common/Card";
 import { updateProfile, selectProfileUpdateStatus } from "@/store/profileSlice";
 
@@ -15,57 +16,56 @@ const EditProfileForm = ({ user, onSaveSuccess }) => {
   const isSaving = updateStatus === "loading";
 
   const [form, setForm] = useState({
-    name: user?.name || "",
-    bio: user?.bio || "Hey 👋 I’m new here!",
-    location: user?.location || "",
-    website: user?.website || "",
-    avatarUrl: user?.avatarUrl || DEFAULT_AVATAR,
+    name: "",
+    username: "",
+    bio: "Hey 👋 I’m new here!",
+    location: "",
+    website: "",
+    avatarUrl: DEFAULT_AVATAR,
   });
 
+  // Populate form when user data changes
   useEffect(() => {
-    // Update form when user prop changes
-    setForm({
-      name: user?.name || "",
-      bio: user?.bio || "Hey 👋 I’m new here!",
-      location: user?.location || "",
-      website: user?.website || "",
-      avatarUrl: user?.avatarUrl || DEFAULT_AVATAR,
-    });
+    if (user) {
+      setForm({
+        name: user.name || "",
+        username: user.username || "",
+        bio: user.bio || "Hey 👋 I’m new here!",
+        location: user.location || "",
+        website: user.website || "",
+        avatarUrl: user.avatarUrl || DEFAULT_AVATAR,
+      });
+    }
   }, [user]);
 
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.name.trim()) {
-      alert("Name is required");
-      return;
-    }
+    // Validation
+    if (!form.name.trim()) return toast.error("Name is required");
+    if (!form.username.trim()) return toast.error("Username is required");
+    if (form.website && !/^https?:\/\/.+/i.test(form.website))
+      return toast.error("Enter a valid website URL (http/https)");
 
-    if (form.website && !/^https?:\/\/.+/i.test(form.website)) {
-      alert("Enter a valid website URL (must start with http/https)");
-      return;
-    }
-
-    if (!user?.$id) {
-      alert("User ID missing. Cannot update profile.");
-      return;
-    }
+    if (!user?.$id) return toast.error("User ID missing. Cannot update profile.");
 
     try {
-      const payload = {
-        profileId: user.$id,
-        profileData: form,
-      };
-      await dispatch(updateProfile(payload)).unwrap();
-      onSaveSuccess?.(form); // callback on successful save
+      const updatedProfile = await dispatch(
+        updateProfile({ profileId: user.$id, profileData: form })
+      ).unwrap();
+
+      toast.success("✅ Profile updated successfully!");
+      onSaveSuccess?.(updatedProfile);
     } catch (err) {
       console.error("❌ Failed to update profile:", err);
-      alert(err || "Failed to update profile");
+      toast.error(err?.message || "Failed to update profile");
     }
   };
 
@@ -76,7 +76,7 @@ const EditProfileForm = ({ user, onSaveSuccess }) => {
       </Card.Header>
       <Card.Content>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Avatar Preview */}
+          {/* Avatar */}
           <div className="flex flex-col items-center gap-2">
             <img
               src={form.avatarUrl || DEFAULT_AVATAR}
@@ -92,29 +92,10 @@ const EditProfileForm = ({ user, onSaveSuccess }) => {
             />
           </div>
 
-          <Input
-            label="Name"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            required
-          />
-
-          <Textarea
-            label="Bio"
-            name="bio"
-            value={form.bio}
-            onChange={handleChange}
-            rows={3}
-          />
-
-          <Input
-            label="Location"
-            name="location"
-            value={form.location}
-            onChange={handleChange}
-          />
-
+          <Input label="Name" name="name" value={form.name} onChange={handleChange} required />
+          <Input label="Username" name="username" value={form.username} onChange={handleChange} required />
+          <Textarea label="Bio" name="bio" value={form.bio} onChange={handleChange} rows={3} />
+          <Input label="Location" name="location" value={form.location} onChange={handleChange} />
           <Input
             label="Website"
             name="website"

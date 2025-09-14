@@ -2,7 +2,8 @@
 import { Card } from "../common/Card";
 
 const ProfileInfo = ({ bio, location, website }) => {
-  const safeWebsite = website?.startsWith("http") ? website : `https://${website}`;
+  const safeWebsite =
+    website && /^https?:\/\//i.test(website) ? website : website ? `https://${website}` : null;
 
   return (
     <Card className="shadow-sm">
@@ -15,8 +16,8 @@ const ProfileInfo = ({ bio, location, website }) => {
         </p>
 
         <ul className="text-sm space-y-2">
-          {location && <li>📍 {location}</li>}
-          {website && (
+          {location ? <li>📍 {location}</li> : null}
+          {safeWebsite ? (
             <li>
               🔗{" "}
               <a
@@ -28,7 +29,7 @@ const ProfileInfo = ({ bio, location, website }) => {
                 {website}
               </a>
             </li>
-          )}
+          ) : null}
         </ul>
       </Card.Content>
     </Card>

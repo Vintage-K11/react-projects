@@ -30,7 +30,7 @@ import { ID, Query } from "appwrite";
  */
 
 const databaseId = conf.appwriteDatabaseId;
-const collectionId = conf.appwriteCollectionId;
+const collectionId = conf.appwriteBlogpostCollectionId;
 const bucketId = conf.appwriteBucketId;
 
 const postService = {

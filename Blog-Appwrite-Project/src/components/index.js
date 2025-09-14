@@ -18,7 +18,7 @@ import Input from './common/Input';
 import Label from './common/Label';
 import Select from './common/Select';
 import RTE from './common/RTE';
-import TextArea from './common/TextArea';
+import Textarea from './common/Textarea';
 import Logo from './common/Logo';
 import SocialSidebar from './common/SocialSidebar';
 import UserAvatar from './common/UserAvatar';
@@ -70,7 +70,7 @@ export {
   Label,
   Select,
   RTE,
-  TextArea,
+  Textarea,
   Logo,
   SocialSidebar,
   UserAvatar,

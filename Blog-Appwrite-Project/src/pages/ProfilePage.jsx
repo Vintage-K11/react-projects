@@ -1,7 +1,8 @@
 // src/pages/ProfilePage.jsx
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import toast, { Toaster } from "react-hot-toast";
 
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import ProfileInfo from "@/components/profile/ProfileInfo";
@@ -11,16 +12,17 @@ import EditProfileForm from "@/components/profile/EditProfileForm";
 import ProfileSkeleton from "@/components/common/skeletons/ProfileSkeleton";
 
 import {
-  fetchProfile,
+  fetchProfileByUsername,
+  updateProfile,
   selectProfile,
   selectProfileFetchStatus,
-  updateProfile,
 } from "@/store/profileSlice";
 import { selectCurrentUser } from "@/store/authSlice";
 
 const ProfilePage = () => {
-  const { username } = useParams(); // optional, can fetch by username later
+  const { username } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const currentUser = useSelector(selectCurrentUser);
   const profile = useSelector(selectProfile);
@@ -31,18 +33,18 @@ const ProfilePage = () => {
 
   const isOwnProfile = profile?.userId === currentUser?.$id;
 
-  // Fetch profile when currentUser changes
+  // Fetch profile by username
   useEffect(() => {
-    if (currentUser?.$id) {
-      dispatch(fetchProfile(currentUser.$id));
+    if (username) {
+      dispatch(fetchProfileByUsername(username));
+    } else if (currentUser?.username) {
+      dispatch(fetchProfileByUsername(currentUser.username));
     }
-  }, [currentUser, dispatch]);
+  }, [username, currentUser, dispatch]);
 
-  // Sync posts (replace with Appwrite posts fetch if available)
+  // Update posts when profile changes
   useEffect(() => {
-    if (profile) {
-      setPosts(profile.posts || []);
-    }
+    setPosts(profile?.posts || []);
   }, [profile]);
 
   // Handle profile update
@@ -50,64 +52,82 @@ const ProfilePage = () => {
     if (!profile) return;
 
     try {
-      await dispatch(
+      const updatedProfile = await dispatch(
         updateProfile({ profileId: profile.$id, profileData: updatedData })
       ).unwrap();
+
+      toast.success("✅ Profile updated successfully!");
       setEditing(false);
+
+      // Redirect if username changed
+      if (updatedData.username && updatedData.username !== profile.username) {
+        navigate(`/profile/${updatedProfile.username}`);
+      }
     } catch (err) {
       console.error("❌ Failed to update profile:", err);
-      alert(err || "Failed to update profile");
+      toast.error(err?.message || "Failed to update profile");
     }
   };
 
-  if (fetchStatus === "loading" || !profile) return <ProfileSkeleton />;
+  // Loading state
+  if (fetchStatus === "loading") return <ProfileSkeleton />;
+
+  // Profile not found
+  if (!profile) {
+    return (
+      <div className="flex items-center justify-center h-80 text-gray-500">
+        <p>🚫 Profile not found</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10 space-y-6">
-      {/* Profile Header */}
-      <ProfileHeader
-        user={{
-          name: profile.name,
-          avatar: profile.avatarUrl || "https://www.gravatar.com/avatar/?d=mp&f=y",
-          coverImage: profile.coverImage || "https://source.unsplash.com/1200x300/?landscape",
-        }}
-        isOwnProfile={isOwnProfile}
-        onEdit={() => setEditing(true)}
-      />
-
-      {/* Edit Profile Form */}
-      {editing && isOwnProfile && (
-        <EditProfileForm
-          user={profile}
-          onSave={handleSaveProfile}
-          isSaving={fetchStatus === "loading"}
+    <>
+      <Toaster position="top-right" />
+      <div className="max-w-5xl mx-auto px-4 py-10 space-y-6">
+        {/* Header */}
+        <ProfileHeader
+          user={{
+            name: profile.name,
+            avatar:
+              profile.avatarUrl || "https://www.gravatar.com/avatar/?d=mp&f=y",
+            coverImage:
+              profile.coverImageUrl ||
+              "https://source.unsplash.com/1200x300/?landscape",
+          }}
+          isOwnProfile={isOwnProfile}
+          onEdit={isOwnProfile ? () => setEditing(true) : undefined}
         />
-      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Posts Section */}
-        <div className="lg:col-span-2 space-y-6">
-          <ProfilePosts posts={posts} />
+        {/* Edit Form */}
+        {editing && isOwnProfile && (
+          <EditProfileForm user={profile} onSaveSuccess={handleSaveProfile} />
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Posts */}
+          <div className="lg:col-span-2 space-y-6">
+            <ProfilePosts posts={posts} />
+          </div>
+
+          {/* Info + Stats */}
+          <aside className="space-y-4">
+            <ProfileInfo
+              bio={profile.bio}
+              location={profile.location}
+              website={profile.website}
+            />
+            <ProfileStats
+              stats={{
+                posts: posts.length,
+                followers: profile.followers?.length || 0,
+                following: profile.following?.length || 0,
+              }}
+            />
+          </aside>
         </div>
-
-        {/* Sidebar Section */}
-        <aside className="space-y-4">
-          <ProfileInfo
-            bio={profile.bio}
-            location={profile.location}
-            website={profile.website}
-          />
-          <ProfileStats
-            stats={{
-              posts: posts.length,
-              followers: profile.followers || 0,
-              following: profile.following || 0,
-              comments: profile.comments || 0,
-            }}
-          />
-        </aside>
       </div>
-    </div>
+    </>
   );
 };
 

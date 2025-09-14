@@ -1,27 +1,18 @@
-// import React from "react";
-
-// export default function Button({
-//     children,
-//     type = "button",
-//     bgColor = "bg-blue-600",
-//     textColor = "text-white",
-//     className = "",
-//     ...props
-// }) {
-//     return (
-//         <button className={`px-4 py-2 rounded-lg ${bgColor} ${textColor} ${className}`} {...props}>
-//             {children}
-//         </button>
-//     );
-// }
+// src/components/common/Button.jsx
 import React from "react";
 import { Button as UIButton } from "../ui/button";
 
-// Single common Button for the app
-export const Button = React.forwardRef(
-  ({ children, variant = "primary", size = "default", ...props }, ref) => {
+// Reusable Button component
+const Button = React.forwardRef(
+  ({ children, variant = "primary", size = "default", className = "", ...props }, ref) => {
     return (
-      <UIButton ref={ref} variant={variant} size={size} {...props}>
+      <UIButton
+        ref={ref}
+        variant={variant}
+        size={size}
+        className={className}
+        {...props}
+      >
         {children}
       </UIButton>
     );
@@ -29,3 +20,6 @@ export const Button = React.forwardRef(
 );
 
 Button.displayName = "Button";
+
+export { Button };
+export default Button;

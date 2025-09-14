@@ -1,3 +1,4 @@
+// src/components/common/Card.jsx
 import React from "react";
 import {
   Card as UICard,
@@ -10,7 +11,7 @@ import {
 } from "../ui/card";
 
 // Main Card wrapper
-export const Card = ({ children, className, ...props }) => {
+const Card = ({ children, className = "", ...props }) => {
   return (
     <UICard className={className} {...props}>
       {children}
@@ -25,3 +26,9 @@ Card.Description = UICardDescription;
 Card.Content = UICardContent;
 Card.Action = UICardAction;
 Card.Footer = UICardFooter;
+
+// Display name for React DevTools
+Card.displayName = "Card";
+
+export { Card };
+export default Card;

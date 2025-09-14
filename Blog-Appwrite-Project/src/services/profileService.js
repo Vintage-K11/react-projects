@@ -2,10 +2,6 @@
 import conf from "@/conf";
 import { Client, Databases, ID, Query, Permission, Role } from "appwrite";
 
-/**
- * ProfileService handles CRUD operations for user profiles
- * using Appwrite's Databases API.
- */
 class ProfileService {
   constructor() {
     this.client = new Client()
@@ -16,124 +12,140 @@ class ProfileService {
     this.databaseId = conf.appwriteDatabaseId;
     this.collectionId = conf.appwriteProfilesCollectionId;
 
-    console.log("✅ ProfileService initialized");
+    if (!this.databaseId || !this.collectionId) {
+      console.warn("⚠️ ProfileService: Missing Database or Collection ID in conf.");
+    } else {
+      console.log("✅ ProfileService ready for:", this.collectionId);
+    }
   }
 
-  /**
-   * Create a new profile with safe defaults
-   * @param {Object} profileData
-   * @param {string} profileData.userId - Appwrite user ID
-   * @param {string} profileData.name - Display name
-   * @param {string} [profileData.bio]
-   * @param {string} [profileData.avatarUrl]
-   * @param {string} [profileData.location]
-   * @param {string} [profileData.website]
-   * @param {Object} [profileData.socialLinks]
-   * @returns {Promise<Object>} created document
-   */
+  // ==========================
+  // Create new profile
+  // ==========================
   async createProfile({
     userId,
+    username,
     name = "New User",
     bio = "Hey 👋 I’m new here!",
     avatarUrl = "",
+    coverImageUrl = "",
     location = "",
-    website = "",
-    socialLinks = {},
+  followers = 0,
+  following = 0,
   }) {
-    try {
-      // fallback avatar (initials if name, else generic)
-      const defaultAvatar = name
-        ? `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
-            name
-          )}`
-        : "https://www.gravatar.com/avatar/?d=mp";
+    if (!userId || !username) throw new Error("userId and username are required");
 
-      const doc = await this.databases.createDocument(
+    try {
+      const finalAvatar =
+        avatarUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name || username)}`;
+      const finalCover =
+        coverImageUrl || "https://source.unsplash.com/1600x400/?nature,abstract"; // valid default cover
+
+      // Check username uniqueness
+      const existing = await this.getProfileByUsername(username);
+      if (existing) throw new Error("Username already taken");
+
+      return await this.databases.createDocument(
         this.databaseId,
         this.collectionId,
         ID.unique(),
         {
           userId,
+          username: username.toLowerCase(),
           name,
           bio,
-          avatarUrl: avatarUrl || defaultAvatar,
+          avatarUrl: finalAvatar,
+          coverImageUrl: finalCover,
           location,
-          website,
-          socialLinks,
+          followers: typeof followers === "number" ? followers : 0,
+          following: typeof following === "number" ? following : 0,
         },
         [
-          Permission.read(Role.user(userId)),
-          Permission.update(Role.user(userId)),
-          Permission.delete(Role.user(userId)),
+          Permission.read(Role.any()),          // Public profile
+          Permission.update(Role.user(userId)), // Only owner can update
+          Permission.delete(Role.user(userId)), // Only owner can delete
         ]
       );
-
-      return doc;
     } catch (error) {
-      console.error("❌ ProfileService.createProfile error:", error.message);
+      console.error("❌ createProfile failed:", error.message);
       throw error;
     }
   }
 
-  // Get profile by userId
+  // ==========================
+  // Fetch profile by userId
+  // ==========================
   async getProfileByUserId(userId) {
+    if (!userId) throw new Error("userId is required");
     try {
-      const result = await this.databases.listDocuments(
-        this.databaseId,
-        this.collectionId,
-        [Query.equal("userId", userId)]
-      );
-      return result.documents.length > 0 ? result.documents[0] : null;
+      const res = await this.databases.listDocuments(this.databaseId, this.collectionId, [
+        Query.equal("userId", userId),
+        Query.limit(1),
+      ]);
+      return res.documents[0] || null;
     } catch (error) {
-      console.error(
-        "❌ ProfileService.getProfileByUserId error:",
-        error.message
-      );
+      console.error("❌ getProfileByUserId failed:", error.message);
       throw error;
     }
   }
 
-  // Update profile by document ID
+  // ==========================
+  // Fetch profile by username
+  // ==========================
+  async getProfileByUsername(username) {
+    if (!username) throw new Error("username is required");
+    try {
+      const res = await this.databases.listDocuments(this.databaseId, this.collectionId, [
+        Query.equal("username", username.toLowerCase()),
+        Query.limit(1),
+      ]);
+      return res.documents[0] || null;
+    } catch (error) {
+      console.error("❌ getProfileByUsername failed:", error.message);
+      throw error;
+    }
+  }
+
+  // ==========================
+  // Update profile
+  // ==========================
   async updateProfile(profileId, updates) {
+    if (!profileId) throw new Error("profileId is required");
     try {
-      return await this.databases.updateDocument(
-        this.databaseId,
-        this.collectionId,
-        profileId,
-        updates
-      );
+      if (updates.username) updates.username = updates.username.toLowerCase();
+      return await this.databases.updateDocument(this.databaseId, this.collectionId, profileId, updates);
     } catch (error) {
-      console.error("❌ ProfileService.updateProfile error:", error.message);
+      console.error("❌ updateProfile failed:", error.message);
       throw error;
     }
   }
 
-  // Delete a profile
+  // ==========================
+  // Delete profile
+  // ==========================
   async deleteProfile(profileId) {
+    if (!profileId) throw new Error("profileId is required");
     try {
-      await this.databases.deleteDocument(
-        this.databaseId,
-        this.collectionId,
-        profileId
-      );
+      await this.databases.deleteDocument(this.databaseId, this.collectionId, profileId);
       return true;
     } catch (error) {
-      console.error("❌ ProfileService.deleteProfile error:", error.message);
+      console.error("❌ deleteProfile failed:", error.message);
       throw error;
     }
   }
 
-  // List profiles (admin usage only)
-  async listProfiles(limit = 50) {
+  // ==========================
+  // List public profiles (paginated)
+  // ==========================
+  async listProfiles({ limit = 20, offset = 0 } = {}) {
     try {
-      const result = await this.databases.listDocuments(
-        this.databaseId,
-        this.collectionId,
-        [Query.limit(limit)]
-      );
-      return result.documents;
+      const res = await this.databases.listDocuments(this.databaseId, this.collectionId, [
+        Query.limit(limit),
+        Query.offset(offset),
+      ]);
+      return res.documents;
     } catch (error) {
-      console.error("❌ ProfileService.listProfiles error:", error.message);
+      console.error("❌ listProfiles failed:", error.message);
       return [];
     }
   }

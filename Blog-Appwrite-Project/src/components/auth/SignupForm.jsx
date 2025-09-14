@@ -1,92 +1,3 @@
-// import React, {useState} from 'react'
-// import authService from '../appwrite/auth'
-// import {Link ,useNavigate} from 'react-router-dom'
-// import {login} from '../store/authSlice'
-// import {Button, Input, Logo} from './index.js'
-// import {useDispatch} from 'react-redux'
-// import {useForm} from 'react-hook-form'
-
-// function Signup() {
-//     const navigate = useNavigate()
-//     const [error, setError] = useState("")
-//     const dispatch = useDispatch()
-//     const {register, handleSubmit} = useForm()
-
-//     const create = async(data) => {
-//         setError("")
-//         try {
-//             const userData = await authService.createAccount(data)
-//             if (userData) {
-//                 const userData = await authService.getCurrentUser()
-//                 if(userData) dispatch(login({userData}));
-//                 navigate("/")
-//             }
-//         } catch (error) {
-//             setError(error.message)
-//         }
-//     }
-
-//   return (
-//     <div className="flex items-center justify-center">
-//             <div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
-//             <div className="mb-2 flex justify-center">
-//                     <span className="inline-block w-full max-w-[100px]">
-//                         <Logo width="100%" />
-//                     </span>
-//                 </div>
-//                 <h2 className="text-center text-2xl font-bold leading-tight">Sign up to create account</h2>
-//                 <p className="mt-2 text-center text-base text-black/60">
-//                     Already have an account?&nbsp;
-//                     <Link
-//                         to="/login"
-//                         className="font-medium text-primary transition-all duration-200 hover:underline"
-//                     >
-//                         Sign In
-//                     </Link>
-//                 </p>
-//                 {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
-
-//                 <form onSubmit={handleSubmit(create)}>
-//                     <div className='space-y-5'>
-//                         <Input
-//                         label="Full Name: "
-//                         placeholder="Enter your full name"
-//                         {...register("name", {
-//                             required: true,
-//                         })}
-//                         />
-//                         <Input
-//                         label="Email: "
-//                         placeholder="Enter your email"
-//                         type="email"
-//                         {...register("email", {
-//                             required: true,
-//                             validate: {
-//                                 matchPatern: (value) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
-//                                 "Email address must be a valid address",
-//                             }
-//                         })}
-//                         />
-//                         <Input
-//                         label="Password: "
-//                         type="password"
-//                         placeholder="Enter your password"
-//                         {...register("password", {
-//                             required: true,})}
-//                         />
-//                         <Button type="submit" className="w-full">
-//                             Create Account
-//                         </Button>
-//                     </div>
-//                 </form>
-//             </div>
-
-//     </div>
-//   )
-// }
-
-// export default Signup
-
 // src/components/auth/SignupForm.jsx
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -99,6 +10,7 @@ import { Label } from "../common/Label";
 
 const SignupForm = () => {
   const [name, setName] = useState("");
+  const [username, setUsername] = useState(""); 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -109,21 +21,51 @@ const SignupForm = () => {
   const error = useSelector(selectAuthError);
   const currentUser = useSelector(selectCurrentUser);
 
-  // ✅ Redirect if already logged in
+  // Redirect if already logged in
   useEffect(() => {
-    if (currentUser) {
-      navigate("/", { replace: true });
-    }
+    if (currentUser) navigate("/", { replace: true });
   }, [currentUser, navigate]);
+
+  // Helper: generate username slug
+  const generateUsername = (nameInput) => {
+    return (
+      nameInput.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-") +
+      "-" +
+      Math.floor(1000 + Math.random() * 9000)
+    );
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await dispatch(signupUser({ name, email, password })).unwrap();
-      if (result) {
-        // ✅ Signup successful, user is logged in
-        navigate("/"); // redirect to homepage
+      // Final username
+      let finalUsername = username.trim();
+      if (!finalUsername) {
+        finalUsername = name.trim()
+          ? generateUsername(name)
+          : `user-${Math.floor(1000 + Math.random() * 9000)}`;
       }
+
+      // Default avatar and cover
+      const defaultAvatar = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name || finalUsername)}`;
+      const defaultCover = "https://source.unsplash.com/1200x400/?nature,abstract";
+
+      // Dispatch signup
+      const result = await dispatch(
+        signupUser({ 
+          name, 
+          email, 
+          password, 
+          username: finalUsername,
+          avatarUrl: defaultAvatar,
+          coverImageUrl: defaultCover
+        })
+      ).unwrap();
+
+      console.log("✅ Signup successful:", result);
+
+      // Redirect to user's profile page
+      navigate(`/profile/${result.profile.username}`);
     } catch (err) {
       console.error("❌ Signup failed:", err);
     }
@@ -152,6 +94,18 @@ const SignupForm = () => {
               />
             </div>
 
+            {/* Username (optional) */}
+            <div className="grid gap-3">
+              <Label htmlFor="username">Username (optional)</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="john-doe"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+
             {/* Email */}
             <div className="grid gap-3">
               <Label htmlFor="email">Email</Label>
@@ -171,6 +125,7 @@ const SignupForm = () => {
               <Input
                 id="password"
                 type="password"
+                placeholder="••••••••"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -178,20 +133,18 @@ const SignupForm = () => {
             </div>
 
             {/* Error Message */}
-            {status === "error" && (
-              <p className="text-red-500 text-sm text-center">{error || "Signup failed."}</p>
+            {status === "failed" && (
+              <p className="text-red-500 text-sm text-center">
+                {error || "Signup failed."}
+              </p>
             )}
 
             {/* Signup Button */}
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={status === "loading"}
-            >
+            <Button type="submit" className="w-full" disabled={status === "loading"}>
               {status === "loading" ? "Signing up..." : "Sign Up"}
             </Button>
 
-            {/* Already have an account */}
+            {/* Already have account */}
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
               <Link to="/login" className="underline">
