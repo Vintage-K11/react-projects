@@ -1,15 +1,15 @@
-// src/pages/ProfilePage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 import ProfileHeader from "@/components/profile/ProfileHeader";
-import ProfileInfo from "@/components/profile/ProfileInfo";
-import ProfileStats from "@/components/profile/ProfileStats";
 import ProfilePosts from "@/components/profile/ProfilePosts";
-import EditProfileForm from "@/components/profile/EditProfileForm";
 import ProfileSkeleton from "@/components/common/skeletons/ProfileSkeleton";
+import ProfileDetails from "@/components/profile/ProfileDetails";
+import ProfileComments from "@/components/profile/ProfileComments";
+import ProfileBookmarks from "@/components/profile/ProfileBookmarks";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/common/Tabs";
 
 import {
   fetchProfileByUsername,
@@ -28,10 +28,10 @@ const ProfilePage = () => {
   const profile = useSelector(selectProfile);
   const fetchStatus = useSelector(selectProfileFetchStatus);
 
-  const [editing, setEditing] = useState(false);
-  const [posts, setPosts] = useState([]);
-
   const isOwnProfile = profile?.userId === currentUser?.$id;
+
+  // Local state to manage the active tab
+  const [activeTab, setActiveTab] = useState('posts');
 
   // Fetch profile by username
   useEffect(() => {
@@ -41,33 +41,6 @@ const ProfilePage = () => {
       dispatch(fetchProfileByUsername(currentUser.username));
     }
   }, [username, currentUser, dispatch]);
-
-  // Update posts when profile changes
-  useEffect(() => {
-    setPosts(profile?.posts || []);
-  }, [profile]);
-
-  // Handle profile update
-  const handleSaveProfile = async (updatedData) => {
-    if (!profile) return;
-
-    try {
-      const updatedProfile = await dispatch(
-        updateProfile({ profileId: profile.$id, profileData: updatedData })
-      ).unwrap();
-
-      toast.success("✅ Profile updated successfully!");
-      setEditing(false);
-
-      // Redirect if username changed
-      if (updatedData.username && updatedData.username !== profile.username) {
-        navigate(`/profile/${updatedProfile.username}`);
-      }
-    } catch (err) {
-      console.error("❌ Failed to update profile:", err);
-      toast.error(err?.message || "Failed to update profile");
-    }
-  };
 
   // Loading state
   if (fetchStatus === "loading") return <ProfileSkeleton />;
@@ -82,52 +55,66 @@ const ProfilePage = () => {
   }
 
   return (
-    <>
+    <div className="bg-amber-50">
       <Toaster position="top-right" />
       <div className="max-w-5xl mx-auto px-4 py-10 space-y-6">
-        {/* Header */}
-        <ProfileHeader
-          user={{
-            name: profile.name,
-            avatar:
-              profile.avatarUrl || "https://www.gravatar.com/avatar/?d=mp&f=y",
-            coverImage:
-              profile.coverImageUrl ||
-              "https://source.unsplash.com/1200x300/?landscape",
-          }}
-          isOwnProfile={isOwnProfile}
-          onEdit={isOwnProfile ? () => setEditing(true) : undefined}
-        />
+        <div className="bg-white">
+          <ProfileHeader profile={profile} isOwner={isOwnProfile} />
+        </div>
+        <div className="bg-white">
+        <ProfileDetails profile={profile} isOwner={isOwnProfile} />
+        </div>
+        {/* --- Tabbed Container Layout --- */}
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          {/* Tabs Header */}
+         <div className="flex space-x-3 mt-8 px-12 ">
+            {/* Posts Tab */}
+            <div
+              onClick={() => setActiveTab('posts')}
+              className={`py-3 px-6 text-sm font-bold cursor-pointer rounded-full transition-colors duration-300 ease-in-out ${
+                activeTab === 'posts'
+                  ? 'bg-green-900 text-white'
+                  : 'text-gray-600 border-2 border-gray-500 hover:bg-neutral-300 hover:text-gray-700 hover:border-gray-800'
+              }`}
+            >
+              Posts
+            </div>
 
-        {/* Edit Form */}
-        {editing && isOwnProfile && (
-          <EditProfileForm user={profile} onSaveSuccess={handleSaveProfile} />
-        )}
+            {/* Comments Tab */}
+            <div
+              onClick={() => setActiveTab('comments')}
+              className={`py-3 px-6 text-sm font-bold cursor-pointer rounded-full transition-colors duration-300 ease-in-out ${
+                activeTab === 'comments'
+                 ? 'bg-green-900 text-white'
+                  : 'text-gray-600 border-2 border-gray-500 hover:bg-neutral-300 hover:text-gray-700 hover:border-gray-800'
+              }`}
+            >
+              Comments
+            </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Posts */}
-          <div className="lg:col-span-2 space-y-6">
-            <ProfilePosts posts={posts} />
+            {/* Bookmarks Tab */}
+            <div
+              onClick={() => setActiveTab('bookmarks')}
+              className={`py-3 px-6 text-sm font-bold cursor-pointer rounded-full transition-colors duration-300 ease-in-out ${
+                activeTab === 'bookmarks'
+            ? 'bg-green-900 text-white'
+                : 'text-gray-600 border-2 border-gray-500 hover:bg-neutral-300 hover:text-gray-700 hover:border-gray-800'
+              }`}
+            >
+              Bookmarks
+            </div>
           </div>
 
-          {/* Info + Stats */}
-          <aside className="space-y-4">
-            <ProfileInfo
-              bio={profile.bio}
-              location={profile.location}
-              website={profile.website}
-            />
-            <ProfileStats
-              stats={{
-                posts: posts.length,
-                followers: profile.followers?.length || 0,
-                following: profile.following?.length || 0,
-              }}
-            />
-          </aside>
+
+          {/* Tab Content */}
+          <div className="p-6">
+            {activeTab === 'posts' && <ProfilePosts userId={profile.userId} />}
+            {activeTab === 'comments' && <ProfileComments userId={profile.userId} />}
+            {activeTab === 'bookmarks' && <ProfileBookmarks userId={profile.userId} />}
+         </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

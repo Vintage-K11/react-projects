@@ -1,6 +1,6 @@
 // src/services/profileService.js
-import conf from "@/conf";
-import { Client, Databases, ID, Query, Permission, Role } from "appwrite";
+import conf from '@/conf';
+import { Client, Databases, ID, Query, Permission, Role, Storage } from 'appwrite';
 
 class ProfileService {
   constructor() {
@@ -9,6 +9,7 @@ class ProfileService {
       .setProject(conf.appwriteProjectId);
 
     this.databases = new Databases(this.client);
+    this.storage = new Storage(this.client);
     this.databaseId = conf.appwriteDatabaseId;
     this.collectionId = conf.appwriteProfilesCollectionId;
 
@@ -38,8 +39,7 @@ class ProfileService {
     try {
       const finalAvatar =
         avatarUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name || username)}`;
-      const finalCover =
-        coverImageUrl || "https://source.unsplash.com/1600x400/?nature,abstract"; // valid default cover
+      const finalCover = coverImageUrl || null; // Use null instead of an empty string for the default
 
       // Check username uniqueness
       const existing = await this.getProfileByUsername(username);
@@ -120,6 +120,81 @@ class ProfileService {
     }
   }
 
+  // ==========================
+  // File/Image Handling
+  // ==========================
+  async uploadFile(file) {
+    if (!conf.appwriteBucketId) throw new Error('Storage Bucket ID is not configured.');
+    try {
+      return await this.storage.createFile(conf.appwriteBucketId, ID.unique(), file);
+    } catch (error) {
+      console.error('❌ uploadFile failed:', error.message);
+      throw error;
+    }
+  }
+
+  async deleteFile(fileId) {
+    if (!conf.appwriteBucketId) throw new Error('Storage Bucket ID is not configured.');
+    if (!fileId) return; // Don't fail if there's no file to delete
+    try {
+      return await this.storage.deleteFile(conf.appwriteBucketId, fileId);
+    } catch (error) {
+      // It's possible the file doesn't exist, so we can often ignore this error.
+      console.warn('⚠️ deleteFile failed:', error.message);
+    }
+  }
+
+  getFilePreview(fileId, width, height) {
+    if (!conf.appwriteBucketId) throw new Error('Storage Bucket ID is not configured.');
+    if (!fileId) return null;
+    try {
+      return this.storage.getFilePreview(conf.appwriteBucketId, fileId, width, height);
+    } catch (error) {
+      console.error('❌ getFilePreview failed:', error.message);
+      return null;
+    }
+  }
+
+  // ==========================
+  // Follow / Unfollow Logic
+  // ==========================
+  async follow(myProfileId, theirProfileId, myCurrentFollowing, theirCurrentFollowers) {
+    if (!myProfileId || !theirProfileId) throw new Error("Both profile IDs are required");
+    try {
+      // Add their ID to my 'following' list
+      const updateMyProfile = this.databases.updateDocument(this.databaseId, this.collectionId, myProfileId, {
+        following: [...(myCurrentFollowing || []), theirProfileId],
+      });
+
+      // Add my ID to their 'followers' list
+      const updateTheirProfile = this.databases.updateDocument(this.databaseId, this.collectionId, theirProfileId, {
+        followers: [...(theirCurrentFollowers || []), myProfileId],
+      });
+
+      await Promise.all([updateMyProfile, updateTheirProfile]);
+      return true;
+    } catch (error) {
+      console.error("❌ follow failed:", error.message);
+      throw error;
+    }
+  }
+
+  async unfollow(myProfileId, theirProfileId, myCurrentFollowing, theirCurrentFollowers) {
+    if (!myProfileId || !theirProfileId) throw new Error("Both profile IDs are required");
+    try {
+      const updateMyProfile = this.databases.updateDocument(this.databaseId, this.collectionId, myProfileId, {
+        following: (myCurrentFollowing || []).filter(id => id !== theirProfileId),
+      });
+      const updateTheirProfile = this.databases.updateDocument(this.databaseId, this.collectionId, theirProfileId, {
+        followers: (theirCurrentFollowers || []).filter(id => id !== myProfileId),
+      });
+      await Promise.all([updateMyProfile, updateTheirProfile]);
+      return true;
+    } catch (error) {
+      console.error("❌ unfollow failed:", error.message);
+      throw error;
+    }
+  }
   // ==========================
   // Delete profile
   // ==========================

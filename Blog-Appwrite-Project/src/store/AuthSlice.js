@@ -25,18 +25,14 @@ export const signupUser = createAsyncThunk(
       // 1️⃣ Create Appwrite account
       const user = await authService.createAccount({ name, email, password });
 
-      // 2️⃣ Default avatar & cover
-      const defaultAvatar = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name || email)}`;
-      const defaultCover = "https://source.unsplash.com/1200x400/?nature,abstract";
-
-      // 3️⃣ Profile data
+      // 2️⃣ Profile data
       const profileData = {
         userId: user.$id,
         username,
         name: name || "New User",
         bio: "Hey 👋 I’m new here!",
-        avatarUrl: defaultAvatar,
-        coverImageUrl: defaultCover,
+        // avatarUrl and coverImageUrl will be set by the profileService
+        // if they are not provided.
         location: "",
         followers: [],
         following: [],

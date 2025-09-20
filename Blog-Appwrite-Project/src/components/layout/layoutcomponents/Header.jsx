@@ -1,7 +1,7 @@
 // src/components/layout/layoutcomponents/Header.jsx
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { NavLink, Link, useLocation } from "react-router-dom";
+import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { logoutUser, selectCurrentUser, selectCurrentProfile } from "@/store/authSlice";
 import { Menu, X, User, Bell } from "lucide-react";
@@ -9,6 +9,7 @@ import Logo from "@/components/common/Logo";
 
 const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = useSelector(selectCurrentUser);
   const profile = useSelector(selectCurrentProfile);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -29,6 +30,7 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
+    navigate("/"); // Redirect to homepage after logout
     setMobileOpen(false);
   };
 
@@ -98,7 +100,7 @@ const Header = () => {
                 {userDropdown && (
                   <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg py-2 z-50">
                     <Link
-                      to={`/profile/${profile?.userId}`}
+                      to={`/profile/${profile?.username}`}
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                     >
                       Profile
@@ -182,7 +184,7 @@ const Header = () => {
           ) : (
             <div className="flex flex-col gap-2 mt-2 border-t pt-2">
               <Link
-                to={`/profile/${profile?.userId}`}
+                to={`/profile/${profile?.username}`}
                 onClick={() => setMobileOpen(false)}
               >
                 Profile

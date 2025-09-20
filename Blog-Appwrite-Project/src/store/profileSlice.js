@@ -65,9 +65,38 @@ export const updateProfile = createAsyncThunk(
   "profile/updateProfile",
   async ({ profileId, profileData }, { rejectWithValue }) => {
     try {
-      return await profileService.updateProfile(profileId, profileData);
+      // Use the service layer to handle the API call
+      const updatedDoc = await profileService.updateProfile(profileId, profileData);
+      return updatedDoc;
     } catch (err) {
       return rejectWithValue(err?.message || "Failed to update profile");
+    }
+  }
+);
+
+// Update profile image (avatar or cover)
+export const updateProfileImage = createAsyncThunk(
+  "profile/updateProfileImage",
+  async ({ profile, fieldName, file }, { rejectWithValue }) => {
+    try {
+      // 1. Upload the new file
+      const newFile = await profileService.uploadFile(file);
+
+      // 2. Update the profile document with the new file ID
+      const updates = { [fieldName]: newFile.$id };
+      const updatedProfile = await profileService.updateProfile(profile.$id, updates);
+
+      // 3. Delete the old file (if it exists)
+      const oldFileId = profile[fieldName];
+      if (oldFileId) {
+        await profileService.deleteFile(oldFileId);
+      }
+
+      return updatedProfile;
+    } catch (err) {
+      // If something fails, try to clean up the newly uploaded file
+      if (newFile?.$id) await profileService.deleteFile(newFile.$id);
+      return rejectWithValue(err?.message || "Failed to update image");
     }
   }
 );
@@ -140,12 +169,34 @@ const profileSlice = createSlice({
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.status.update = "succeeded";
-        state.profile = action.payload;
+        // Merge the updated data into the existing profile state
+        if (state.profile?.$id === action.payload.$id) {
+          state.profile = { ...state.profile, ...action.payload };
+        }
       })
       .addCase(updateProfile.rejected, (state, action) => {
         state.status.update = "failed";
         state.error = action.payload;
+      })
+
+      // updateProfileImage
+      .addCase(updateProfileImage.pending, (state) => {
+        state.status.update = "loading";
+      })
+      .addCase(updateProfileImage.fulfilled, (state, action) => {
+        state.status.update = "succeeded";
+        if (state.profile?.$id === action.payload.$id) {
+          state.profile = action.payload;
+        }
+      })
+      .addCase(updateProfileImage.rejected, (state, action) => {
+        state.status.update = "failed";
+        state.error = action.payload;
       });
+
+      // Optimistic update for profile page after editing
+      // The logic from the matcher is now inside the `updateProfile.fulfilled` case
+      // for better clarity and to avoid running it twice.
   },
 });
 

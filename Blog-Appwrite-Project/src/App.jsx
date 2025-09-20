@@ -23,7 +23,6 @@ import EditPostPage from "./pages/EditPostPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import ProfilePage from "./pages/ProfilePage";
-import EditProfile from "./pages/EditProfile";
 import BlogSettings from "./pages/BlogSettings";
 import NotFound from "./pages/NotFound";
 
@@ -47,6 +46,8 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/all-posts" element={<AllPosts />} />
         <Route path="/post/:id" element={<PostPage />} />
+        {/* Public profile view */}
+        <Route path="/profile/:username" element={<ProfilePage />} />
         <Route path="*" element={<NotFound />} />
       </Route>
 
@@ -114,19 +115,6 @@ function App() {
         />
       </Route>
 
-      {/* ---------- Profile Pages ---------- */}
-      {/* Public profile view */}
-      <Route path="/profile/:username" element={<ProfilePage />} />
-
-      {/* Protected edit for own profile */}
-      <Route
-        path="/profile/:username/edit"
-        element={
-          <ProtectedRoute>
-            <EditProfile />
-          </ProtectedRoute>
-        }
-      />
     </Routes>
   );
 }

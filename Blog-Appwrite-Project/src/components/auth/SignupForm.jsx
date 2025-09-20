@@ -46,19 +46,13 @@ const SignupForm = () => {
           : `user-${Math.floor(1000 + Math.random() * 9000)}`;
       }
 
-      // Default avatar and cover
-      const defaultAvatar = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name || finalUsername)}`;
-      const defaultCover = "https://source.unsplash.com/1200x400/?nature,abstract";
-
       // Dispatch signup
       const result = await dispatch(
         signupUser({ 
           name, 
           email, 
           password, 
-          username: finalUsername,
-          avatarUrl: defaultAvatar,
-          coverImageUrl: defaultCover
+          username: finalUsername
         })
       ).unwrap();
 
